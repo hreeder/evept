@@ -7,8 +7,8 @@ backend-characterUpdater-build:
   stage: backend-characterUpdater-build
   before_script:
     - apt-get update && apt-get install -y --no-install-recommends zip
-  script:
     - cd backend/characterUpdater
+  script:
     - make package
 
 backend-serverless:
@@ -21,3 +21,13 @@ backend-serverless:
     - npm install
   script:
     - node_modules/.bin/serverless deploy
+
+frontend-build-sde:
+  image: node:11
+  stage: frontend
+  dependencies:
+    - backend-serverless
+    - cd frontend
+    - yarn
+  script:
+    - yarn build-sde
