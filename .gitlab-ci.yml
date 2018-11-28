@@ -20,4 +20,4 @@ backend-serverless:
     - cd backend
     - npm install
   script:
-    - serverless deploy
+    - npm_modules/.bin/serverless deploy
