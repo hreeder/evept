@@ -1,5 +1,6 @@
 stages:
   - backend-characterUpdater-build
+  - backend-serverless
 
 backend - build characterUpdater:
   image: golang
@@ -8,3 +9,13 @@ backend - build characterUpdater:
     - apt-get update && apt-get install -y --no-install-recommends zip
   script:
     - cd backend/characterUpdater && make package
+
+backend - serverless:
+  image: python3.6
+  stage: backend-serverless
+  dependencies:
+    - backend-characterUpdater-build
+  before_script:
+    - cd backend && npm install
+  script:
+    - serverless deploy
