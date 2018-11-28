@@ -1,0 +1,8 @@
+stages:
+  - backend-characterUpdater-build
+
+backend - build characterUpdater:
+  image: golang
+  stage: backend-characterUpdater-build
+  script:
+    - cd backend/characterUpdater && make package
