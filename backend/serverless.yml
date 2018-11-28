@@ -157,7 +157,7 @@ custom:
 
   # Plugin: serverless-python-requirements
   pythonRequirements:
-    dockerizePip: true
+    dockerizePip: non-linux
   
   # Plugin: serverless-stack-output
   output:
