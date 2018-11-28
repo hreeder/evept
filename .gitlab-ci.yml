@@ -1,6 +1,7 @@
 stages:
   - backend-characterUpdater-build
   - backend-serverless
+  - frontend
 
 backend-characterUpdater-build:
   image: golang
