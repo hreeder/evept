@@ -28,6 +28,7 @@ frontend-build-sde:
   stage: frontend
   dependencies:
     - backend-serverless
+  before_script:
     - cd frontend
     - yarn
   script:
