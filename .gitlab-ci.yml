@@ -4,5 +4,7 @@ stages:
 backend - build characterUpdater:
   image: golang
   stage: backend-characterUpdater-build
+  before_script:
+    - apt-get update && apt-get install -y --no-install-recommends zip
   script:
     - cd backend/characterUpdater && make package
