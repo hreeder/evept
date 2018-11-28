@@ -12,7 +12,7 @@ backend-characterUpdater-build:
     - make package
 
 backend-serverless:
-  image: python:3.6
+  image: node:11
   stage: backend-serverless
   dependencies:
     - backend-characterUpdater-build
