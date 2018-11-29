@@ -43,7 +43,7 @@ frontend-build:
     - cd client
     - yarn
   script:
-    - "export REACT_APP_APIGW_ENDPOINT=$(cat ../stack.json | jq '.endpoint')"
+    - "export REACT_APP_APIGW_ENDPOINT=$(cat ../stack.json | jq -r '.endpoint')"
     - yarn build
   artifacts:
     expire_in: 1 day
