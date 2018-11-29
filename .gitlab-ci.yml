@@ -37,8 +37,6 @@ backend-serverless:
 frontend-build:
   stage: frontend
   image: node:11
-  dependencies:
-    - backend-serverless
   before_script:
     - apt-get update && apt-get install -y jq
     - cd client
