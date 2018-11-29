@@ -21,7 +21,7 @@ Amplify.configure({
     endpoints: [
       {
         name: "evept",
-        endpoint: "https://tzyfg24wz4.execute-api.eu-west-1.amazonaws.com/dev",
+        endpoint: process.env.REACT_APP_APIGW_ENDPOINT,
         custom_header: async () => {
           return { Authorization: (await Auth.currentSession()).idToken.jwtToken }
         }

@@ -29,10 +29,11 @@ backend-serverless:
     - mkdir .build
   script:
     - node_modules/.bin/serverless deploy
+    - "cat .build/stack.json | jq '{endpoint: .ServiceEndpoint}' > ../stack.json"
   artifacts:
     expire_in: 1 day
     paths:
-      - backend/.build/
+      - stack.json
 
 frontend-build:
   stage: frontend
@@ -41,8 +42,8 @@ frontend-build:
     - apt-get update && apt-get install -y jq
     - cd client
     - yarn
-    - cat ../backend/.build/stack.json | jq '.ServiceEndpoint'
   script:
+    - "export REACT_APP_APIGW_ENDPOINT=$(cat ../stack.json | jq '.endpoint')"
     - yarn build
   artifacts:
     expire_in: 1 day
