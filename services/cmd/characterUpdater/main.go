@@ -4,35 +4,21 @@ import (
 	"context"
 	"encoding/json"
 	"log"
-	"strings"
 	"sync"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/hreeder/evept/services/updater"
+	evept "github.com/hreeder/evept/services/shared"
 )
-
-type batchUpdate struct {
-	Entries	[]evePtPrimaryKey
-}
-
-type evePtPrimaryKey struct {
-	ResourceType       string
-	ResourceIdentifier string
-}
-
-func (pk evePtPrimaryKey) GetResourceType() string {
-	split := strings.Split(pk.ResourceType, ":")
-	return split[len(split)-1]
-}
 
 func handler(ctx context.Context, sqsEvent events.SQSEvent) error {
 	awsSession := session.New()
 	var wg sync.WaitGroup
 
 	for _, message := range sqsEvent.Records {
-		var updateRequest batchUpdate
+		var updateRequest evept.BatchUpdate
 		json.Unmarshal([]byte(message.Body), &updateRequest)
 
 		for _, entry := range updateRequest.Entries {
