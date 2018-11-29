@@ -108,6 +108,7 @@ func (u *CharacterUpdater) Run(outerWg *sync.WaitGroup) error {
 	log.Printf("CharacterUpdater:%s:%s: Done\n", u.character.CharacterName, u.character.CharacterID)
 	err := u.save()
 	if err != nil {
+		log.Printf("CharacterUpdater:%s:%s: UNABLE TO SAVE", u.character.CharacterName, u.character.CharacterID)
 		log.Fatal(err)
 		return err
 	}
