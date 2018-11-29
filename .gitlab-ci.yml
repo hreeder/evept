@@ -1,17 +1,17 @@
 stages:
-  - backend-compile
+  - services
   - backend-deploy
   - frontend
   - deploy
 
-backend-compile-characterUpdater:
-  stage: backend-compile
+services-characterUpdater:
+  stage: services
   image: golang
   before_script:
     - apt-get update && apt-get install -y --no-install-recommends zip
-    - cd backend/characterUpdater
+    - cd services/
   script:
-    - make package
+    - make characterupdater
   artifacts:
     expire_in: 1 day
     untracked: true
