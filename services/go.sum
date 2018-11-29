@@ -9,6 +9,7 @@ github.com/cenkalti/backoff v2.0.0+incompatible h1:5IIPUHhlnUZbcHQsQou5k1Tn58nJk
 github.com/cenkalti/backoff v2.0.0+incompatible/go.mod h1:90ReRw6GdpyfrHakVjL/QHaoyV4aDUVVkXQJJJ3NXXM=
 github.com/guregu/dynamo v1.0.0 h1:N/z3OK/SmaUynhSsySZu0s45hvGWIjp4IX2r5Pbgk1Y=
 github.com/guregu/dynamo v1.0.0/go.mod h1:VmV4PHy8bHJm8xhMD00CdejubOf3wVQxXyLLl2NLC9M=
+github.com/hreeder/evept v0.0.0-20181129153329-08c0a807f119 h1:LA2dOyNEnhybFB20YHbLOrI2lEFBKxTse3qqFWw2OVc=
 github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8 h1:12VvqtR6Aowv3l/EQUlocDHW2Cp4G9WJVH7uyH8QFJE=
 github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8/go.mod h1:Nht3zPeWKUH0NzdCt2Blrr5ys8VGpn0CEB0cQHVjt7k=
 github.com/mailru/easyjson v0.0.0-20180823135443-60711f1a8329 h1:2gxZ0XQIU/5z3Z3bUBu+FXuk2pFbkN6tcwi/pjyaDic=

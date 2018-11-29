@@ -1,4 +1,4 @@
-package updater
+package shared
 
 // CharacterCorporation handles the detail for holding what corporation a character is in
 type CharacterCorporation struct {

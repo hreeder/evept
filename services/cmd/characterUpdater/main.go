@@ -10,7 +10,7 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/hreeder/evept-characterUpdater/updater"
+	"github.com/hreeder/evept/services/updater"
 )
 
 type batchUpdate struct {

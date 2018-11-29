@@ -1,4 +1,4 @@
-module github.com/hreeder/evept-characterUpdater
+module github.com/hreeder/evept/services
 
 require (
 	github.com/antihax/goesi v0.0.0-20181121195325-3564b46ce5ac

@@ -1,4 +1,4 @@
-package updater
+package shared
 
 // CharacterSkill is a single skill that a character may have
 type CharacterSkill struct {

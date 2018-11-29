@@ -82,7 +82,7 @@ functions:
     runtime: go1.x
     handler: characterUpdater
     package:
-      artifact: characterUpdater/build/lambda.zip
+      artifact: ../services/build/characterUpdater.zip
     events:
       - sqs:
           arn:

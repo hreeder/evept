@@ -12,8 +12,9 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ssm"
 	"github.com/antihax/goesi"
-	"github.com/guregu/dynamo"
 	"golang.org/x/oauth2"
+
+	evept "github.com/hreeder/evept/services/shared"
 )
 
 // CharacterUpdater is the main updater "object"
@@ -29,12 +30,12 @@ type CharacterUpdater struct {
 	tokenAuth *goesi.SSOAuthenticator
 
 	// Resource
-	character *Character
+	character *evept.Character
 }
 
 // New returns a new CharacterUpdater object
 func New(resourceType, resourceID string, awsSession *session.Session) (*CharacterUpdater, error) {
-	character, err := CharacterFromDynamo(awsSession, resourceType, resourceID)
+	character, err := evept.CharacterFromDynamo(awsSession, resourceType, resourceID)
 
 	if err != nil {
 		return nil, err
@@ -83,13 +84,6 @@ func (u *CharacterUpdater) getAuthContext() context.Context {
 	return context.WithValue(context.Background(), goesi.ContextOAuth2, *u.token)
 }
 
-func (u *CharacterUpdater) save() error {
-	db := dynamo.New(u.awsSession)
-	table := db.Table(os.Getenv("DYNAMO_TABLE_NAME"))
-
-	return table.Put(u.character).Run()
-}
-
 // Run will start the character update action
 func (u *CharacterUpdater) Run(outerWg *sync.WaitGroup) error {
 	log.Printf("CharacterUpdater:%s:%s: Updating\n", u.character.CharacterName, u.character.CharacterID)
@@ -106,7 +100,7 @@ func (u *CharacterUpdater) Run(outerWg *sync.WaitGroup) error {
 	wg.Wait()
 	outerWg.Done()
 	log.Printf("CharacterUpdater:%s:%s: Done\n", u.character.CharacterName, u.character.CharacterID)
-	err := u.save()
+	err := u.character.Save(u.awsSession)
 	if err != nil {
 		log.Printf("CharacterUpdater:%s:%s: UNABLE TO SAVE", u.character.CharacterName, u.character.CharacterID)
 		log.Fatal(err)

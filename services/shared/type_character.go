@@ -1,4 +1,4 @@
-package updater
+package shared
 
 import (
 	"os"
@@ -53,4 +53,12 @@ func CharacterFromDynamo(awsSession *session.Session, resourceType, resourceIden
 func (c Character) ID() int32 {
 	characterID, _ := strconv.ParseInt(c.CharacterID, 10, 32)
 	return int32(characterID)
+}
+
+// Save writes this character to DynamoDB
+func (c *Character) Save(awsSession *session.Session) error {
+	db := dynamo.New(awsSession)
+	table := db.Table(os.Getenv("DYNAMO_TABLE_NAME"))
+
+	return table.Put(c).Run()
 }

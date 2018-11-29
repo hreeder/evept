@@ -1,6 +1,10 @@
 package updater
 
-import "sync"
+import (
+	"sync"
+
+	evept "github.com/hreeder/evept/services/shared"
+)
 
 // UpdateCharacterSkills will update the character with data from the characters/{character_id}/skills endpoint
 func (u *CharacterUpdater) UpdateCharacterSkills(wg *sync.WaitGroup) error {
@@ -16,10 +20,10 @@ func (u *CharacterUpdater) UpdateCharacterSkills(wg *sync.WaitGroup) error {
 
 	u.character.TotalSp = skills.TotalSp
 	u.character.UnallocatedSp = skills.UnallocatedSp
-	u.character.Skills = []CharacterSkill{}
+	u.character.Skills = []evept.CharacterSkill{}
 
 	for _, skill := range skills.Skills {
-		u.character.Skills = append(u.character.Skills, CharacterSkill{
+		u.character.Skills = append(u.character.Skills, evept.CharacterSkill{
 			ActiveSkillLevel:   skill.ActiveSkillLevel,
 			SkillID:            skill.SkillId,
 			SkillpointsInSkill: skill.SkillpointsInSkill,
@@ -44,10 +48,10 @@ func (u *CharacterUpdater) UpdateCharacterSkillqueue(wg *sync.WaitGroup) error {
 		return err
 	}
 
-	u.character.Skillqueue = []CharacterSkillqueueEntry{}
+	u.character.Skillqueue = []evept.CharacterSkillqueueEntry{}
 
 	for _, skill := range queue {
-		u.character.Skillqueue = append(u.character.Skillqueue, CharacterSkillqueueEntry{
+		u.character.Skillqueue = append(u.character.Skillqueue, evept.CharacterSkillqueueEntry{
 			FinishDate:      skill.FinishDate,
 			FinishedLevel:   skill.FinishedLevel,
 			LevelEndSp:      skill.LevelEndSp,
