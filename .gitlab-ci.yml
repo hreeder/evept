@@ -19,7 +19,8 @@ backend-serverless:
     - backend-characterUpdater-build
   before_script:
     - git clone https://github.com/nodesource/distributions.git
-    - (cd distributions/deb && sh setup_10.x)
+    - chmod +x distributions/deb/setup_10.x
+    - ./distributions/deb/setup_10.x
     - cd backend
     - npm install
   script:
