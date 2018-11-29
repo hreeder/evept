@@ -26,8 +26,12 @@ backend-serverless:
     - apt-get install -y nodejs
     - cd backend
     - npm install
+    - mkdir .build
   script:
     - node_modules/.bin/serverless deploy
+  artifacts:
+    paths:
+      - backend/.build/
 
 frontend-build-sde:
   image: node:11
@@ -35,7 +39,9 @@ frontend-build-sde:
   dependencies:
     - backend-serverless
   before_script:
-    - cd frontend
+    - apt-get update && apt-get install -y jq
+    - cd client
     - yarn
+    - cat ../backend/.build/stack.json | jq '.ServiceEndpoint'
   script:
     - yarn build-sde
