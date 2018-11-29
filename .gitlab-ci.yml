@@ -23,7 +23,7 @@ backend-serverless:
     - git clone https://github.com/nodesource/distributions.git
     - chmod +x distributions/deb/setup_10.x
     - ./distributions/deb/setup_10.x
-    - apt-get install -y nodejs
+    - apt-get install -y nodejs jq
     - cd backend
     - npm install
     - mkdir .build
