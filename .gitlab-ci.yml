@@ -13,11 +13,13 @@ backend-characterUpdater-build:
     - make package
 
 backend-serverless:
-  image: node:11
+  image: python:3.6
   stage: backend-serverless
   dependencies:
     - backend-characterUpdater-build
   before_script:
+    - git clone https://github.com/nodesource/distributions.git
+    - (cd distributions/deb && sh setup_10.x)
     - cd backend
     - npm install
   script:
