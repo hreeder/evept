@@ -2,21 +2,23 @@ stages:
   - backend-characterUpdater-build
   - backend-serverless
   - frontend
+  - deploy
 
 backend-characterUpdater-build:
-  image: golang
   stage: backend-characterUpdater-build
+  image: golang
   before_script:
     - apt-get update && apt-get install -y --no-install-recommends zip
     - cd backend/characterUpdater
   script:
     - make package
   artifacts:
+    expire_in: 1 day
     untracked: true
 
 backend-serverless:
-  image: python:3.6
   stage: backend-serverless
+  image: python:3.6
   dependencies:
     - backend-characterUpdater-build
   before_script:
@@ -30,12 +32,13 @@ backend-serverless:
   script:
     - node_modules/.bin/serverless deploy
   artifacts:
+    expire_in: 1 day
     paths:
       - backend/.build/
 
-frontend-build-sde:
-  image: node:11
+frontend-build:
   stage: frontend
+  image: node:11
   dependencies:
     - backend-serverless
   before_script:
@@ -44,4 +47,22 @@ frontend-build-sde:
     - yarn
     - cat ../backend/.build/stack.json | jq '.ServiceEndpoint'
   script:
-    - yarn build-sde
+    - yarn build
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - client/build
+
+frontend-deploy-prod:
+  stage: deploy
+  image: python3.6
+  before_script:
+    - pip install awscli
+    - cd client
+  script:
+    - aws s3 sync build s3://evept.err.wtf --acl public-read
+  environment:
+    name: prod
+    url: http://evept.err.wtf
+  only:
+    - master
