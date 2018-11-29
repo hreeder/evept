@@ -1,11 +1,11 @@
 stages:
-  - backend-characterUpdater-build
-  - backend-serverless
+  - backend-compile
+  - backend-deploy
   - frontend
   - deploy
 
-backend-characterUpdater-build:
-  stage: backend-characterUpdater-build
+backend-compile-characterUpdater:
+  stage: backend-compile
   image: golang
   before_script:
     - apt-get update && apt-get install -y --no-install-recommends zip
@@ -17,10 +17,8 @@ backend-characterUpdater-build:
     untracked: true
 
 backend-serverless:
-  stage: backend-serverless
+  stage: backend-deploy
   image: python:3.6
-  dependencies:
-    - backend-characterUpdater-build
   before_script:
     - git clone https://github.com/nodesource/distributions.git
     - chmod +x distributions/deb/setup_10.x
@@ -55,7 +53,7 @@ frontend-build:
 
 frontend-deploy-prod:
   stage: deploy
-  image: python3.6
+  image: python:3.6
   before_script:
     - pip install awscli
     - cd client
