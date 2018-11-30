@@ -98,7 +98,6 @@ func (u *CharacterUpdater) Run(outerWg *sync.WaitGroup) error {
 	u.character.UpdatedAt = time.Now().UTC()
 
 	wg.Wait()
-	outerWg.Done()
 	log.Printf("CharacterUpdater:%s:%s: Done\n", u.character.CharacterName, u.character.CharacterID)
 	err := u.character.Save(u.awsSession)
 	if err != nil {
@@ -106,5 +105,7 @@ func (u *CharacterUpdater) Run(outerWg *sync.WaitGroup) error {
 		log.Fatal(err)
 		return err
 	}
+	
+	outerWg.Done()
 	return nil
 }
