@@ -2,27 +2,24 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import './styles.css'
-
 import LoginForm from './form'
 import { Redirect } from 'react-router-dom'
 
 class Login extends React.Component {
   render() {
-    const { from } = this.props.location.state || { from: { pathname: "/" } }
-    if (this.props.auth.user !== null) {
-      return <Redirect to={from} />
-    }
-
-    let errorMessage = ""
-    if (this.props.auth.login.fail) {
-      errorMessage = `Login Failed: ${this.props.auth.login.fail_message}`
+    if (this.props.auth.login.challenge !== null) {
+      switch(this.props.auth.login.challenge) {
+        case "NEW_PASSWORD_REQUIRED": {
+          return <Redirect to="/auth/challenge/newPassword" />
+        }
+        default: {}
+      }
     }
 
     return (
       <div>
-        <LoginForm onSubmit={this.onSubmit} />
-        <span className='text-danger'>&nbsp;{errorMessage}&nbsp;</span>
+        <h1 className='h3 mb-3 font-weight-normal'><small>EVE</small><strong>PT</strong>: Log In</h1>
+        <LoginForm />
       </div>
     )
   }

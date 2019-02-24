@@ -4,7 +4,9 @@ const DEFAULT_STATE = {
     pending: false,
     fail: false,
     fail_reason: "",
-    fail_message: ""
+    fail_message: "",
+    challenge: null,
+    challengeUser: null
   }
 }
 
@@ -18,7 +20,8 @@ export default function(state=DEFAULT_STATE, action) {
       }}
     }
 
-    case "auth.login_REJECTED": {
+    case "auth.login_REJECTED": 
+    case "auth.challengeNewPassword_REJECTED": {
       return {...state, login: {
         ...state.login,
         pending: false,
@@ -28,12 +31,25 @@ export default function(state=DEFAULT_STATE, action) {
       }}
     }
 
-    case "auth.login_FULFILLED": {
-      return {...state, login: {
-        ...state.login,
-        pending: false,
-        fail: false
-      }}
+    case "auth.login_FULFILLED":
+    case "auth.challengeNewPassword_FULFILLED": {
+      if (action.payload.signInUserSession === null) {
+        return {...state, login: {
+          ...state.login,
+          pending: false,
+          fail: false,
+          challenge: action.payload.challengeName,
+          challengeUser: action.payload
+        }}
+      } else {
+        return {...state, login: {
+          ...state.login,
+          pending: false,
+          fail: false,
+          challenge: null,
+          challengeUser: null
+        }}
+      }
     }
 
     case "auth.getLoggedInUser_PENDING": {

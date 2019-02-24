@@ -22,8 +22,7 @@ class LoginForm extends Component {
 
   render() {
     return (
-      <Form className="form-signin" onSubmit={this.handleSubmit}>
-        <h1 className='h3 mb-3 font-weight-normal'><small>EVE</small><strong>PT</strong>: Log In</h1>
+      <Form className="form-authenticator form-authenticator-login" onSubmit={this.handleSubmit}>
         <Input
           autoFocus
           type='text'

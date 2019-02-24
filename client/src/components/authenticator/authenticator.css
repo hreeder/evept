@@ -28,3 +28,37 @@ body {
   background-color: #f5f5f5;
   text-align: center!important;
 }
+
+.form-authenticator {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
+.form-authenticator .checkbox {
+  font-weight: 400;
+}
+.form-authenticator .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-authenticator .form-control:focus {
+  z-index: 2;
+}
+
+.form-authenticator-newPassword,
+.form-authenticator input[type="text"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-authenticator-confirmPassword,
+.form-authenticator-login input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}

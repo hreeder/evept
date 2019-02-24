@@ -30,3 +30,11 @@ export function getLoggedInUser() {
     // promise rejections
   })
 }
+
+export function challengeResponseNewPassword(user, password) {
+  return dispatch => dispatch({
+    type: "auth.challengeNewPassword",
+    payload: Auth.completeNewPassword(user, password)
+  }).then(() => dispatch(getLoggedInUser()))
+    .catch(err => {})
+}
