@@ -8,3 +8,5 @@ RUN apt-get update && apt-get install -y \
  && rm -rf /var/lib/apt/lists
 
 ADD load_sde.sh /usr/bin/load_sde
+
+RUN chmod +x /usr/bin/load_sde

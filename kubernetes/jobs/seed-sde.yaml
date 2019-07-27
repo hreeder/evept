@@ -16,7 +16,9 @@ spec:
           - name: evept-db-creds
             mountPath: "/etc/evept/db/credentials"
             readOnly: true
+      restartPolicy: Never
       volumes:
       - name: evept-db-creds
         secret:
           secretName: evept-db-auth
+  backoffLimit: 1
