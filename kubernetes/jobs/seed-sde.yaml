@@ -1,0 +1,22 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name:  seed-eve-sde
+spec:
+  template:
+    metadata:
+      name:  seed-eve-sde
+    spec:
+      containers:
+      - name: seeder
+        image: evept/oneoffscripts
+        command: ["/usr/bin/load_sde"]
+        volumeMounts:
+          - name: evept-db-creds
+            mountPath: "/etc/evept/db/credentials"
+            readOnly: true
+      volumes:
+      - name: evept-db-creds
+        secret:
+          secretName: evept-db-auth
