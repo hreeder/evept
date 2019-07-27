@@ -18,3 +18,5 @@ export PGUSER=`cat /etc/evept/db/credentials/POSTGRES_USER`
 export PGPASSWORD=`cat /etc/evept/db/credentials/POSTGRES_PASSWORD`
 
 pg_restore -h evept-db -d evept $DUMP_FILE
+
+psql -h evept-db -d evept -c "SELECT schema_name FROM information_schema.schemata WHERE schema_name='evesde';" | grep "1 row"
