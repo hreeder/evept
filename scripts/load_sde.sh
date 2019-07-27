@@ -1,3 +1,4 @@
+#!/bin/sh
 BASE="https://www.fuzzwork.co.uk/dump"
 SCHEMA_ARCHIVE="$BASE/postgres-schema-latest.dmp.bz2"
 DUMP_FILE="postgres-schema-latest.dmp"
