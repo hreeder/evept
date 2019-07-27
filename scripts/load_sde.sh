@@ -2,7 +2,7 @@ BASE="https://www.fuzzwork.co.uk/dump"
 SCHEMA_ARCHIVE="$BASE/postgres-schema-latest.dmp.bz2"
 DUMP_FILE="postgres-schema-latest.dmp"
 
-pushd /tmp
+cd /tmp
 
 # Get Archive
 curl $SCHEMA_ARCHIVE -o "$DUMP_FILE.bz2"

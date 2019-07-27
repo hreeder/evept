@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
       - name: seeder
-        image: evept/oneoffscripts
+        image: evept/oneoffscripts:latest
         command: ["/usr/bin/load_sde"]
         volumeMounts:
           - name: evept-db-creds
