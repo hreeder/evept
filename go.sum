@@ -29,6 +29,7 @@ github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpO
 github.com/hreeder/evept v0.0.0-20181129153329-08c0a807f119 h1:LA2dOyNEnhybFB20YHbLOrI2lEFBKxTse3qqFWw2OVc=
 github.com/hreeder/evept v0.0.0-20190712091235-f1616586ca2e h1:b4kosZKOnNp4+inA4vDNHZSX9huQvDJDzlVnt6lvtZE=
 github.com/hreeder/evept/services v0.0.0-20190712091235-f1616586ca2e h1:TJ3PuVk9QP8nVwESAjmyw2ThhLRkf2q6NRq/EGnwgJM=
+github.com/hreeder/evept/services v0.0.0-20190712091235-f1616586ca2e/go.mod h1:sdi7opqTP7zjEvsQXqBOibZqA7JCET+VbGGa31zlGlc=
 github.com/jinzhu/inflection v0.0.0-20180308033659-04140366298a h1:eeaG9XMUvRBYXJi4pg1ZKM7nxc5AfXfojeLLW7O5J3k=
 github.com/jinzhu/inflection v0.0.0-20180308033659-04140366298a/go.mod h1:h+uFLlag+Qp1Va5pdKtLDYj+kHp5pxUVkryuEj+Srlc=
 github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8 h1:12VvqtR6Aowv3l/EQUlocDHW2Cp4G9WJVH7uyH8QFJE=

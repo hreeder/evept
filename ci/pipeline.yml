@@ -14,6 +14,18 @@ resources:
     uri: https://github.com/hreeder/evept.git
     branch: dev
 
+- name: evept-source-rolodex
+  type: git
+  icon: github-circle
+  source:
+    uri: https://github.com/hreeder/evept.git
+    branch: dev
+    paths:
+    - services/rolodex/*
+    - pkg/rolodex/*
+    - pkg/shared/*
+    - pkg/util/*
+
 - name: evept-source-scripts
   type: git
   icon: github-circle
@@ -21,13 +33,21 @@ resources:
     uri: https://github.com/hreeder/evept.git
     branch: dev
     paths:
-      - scripts/*
+    - scripts/*
 
 - name: oneoffscripts-image
   type: docker-image
   icon: docker
   source:
     repository: evept/oneoffscripts
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
+
+- name: rolodex-image
+  type: docker-image
+  icon: docker
+  source:
+    repository: evept/rolodex
     username: ((dockerhub.username))
     password: ((dockerhub.password))
 
@@ -44,6 +64,10 @@ groups:
   jobs:
   - build-push-oneoff
   - seed-eve-sde
+- name: services
+  jobs:
+  - build-push-rolodex
+#   - deploy-rolodex
 
 jobs:
 - name: build-push-oneoff
@@ -61,3 +85,14 @@ jobs:
     params:
       kubectl: create -f evept-source/kubernetes/jobs/seed-sde.yaml
       wait_until_ready_selector: job=seed-eve-sde
+
+- name: build-push-rolodex
+  plan:
+  - get: evept-source-rolodex
+    trigger: true
+  - put: rolodex-image
+    params:
+      build: evept-source-rolodex
+      dockerfile: dockerfiles/rolodex.Dockerfile
+
+# - name: deploy-rolodex
