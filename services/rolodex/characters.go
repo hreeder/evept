@@ -1,0 +1,5 @@
+package rolodex
+
+func GetCharacters() {
+
+}
