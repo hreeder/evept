@@ -50,3 +50,4 @@ jobs:
   - put: kube
     params:
       kubectl: apply -f evept-source/kubernetes/jobs/seed-sde.yaml
+      wait_until_ready_selector: job=seed-eve-sde
