@@ -7,6 +7,13 @@ resource_types:
     tag: "1.14"
 
 resources:
+- name: evept-source
+  type: git
+  icon: github-circle
+  source:
+    uri: https://github.com/hreeder/evept.git
+    branch: dev
+
 - name: evept-source-scripts
   type: git
   icon: github-circle
@@ -49,8 +56,8 @@ jobs:
 
 - name: seed-eve-sde
   plan:
-  - get: evept-source-scripts
+  - get: evept-source
   - put: kube
     params:
-      kubectl: create -f evept-source-scripts/kubernetes/jobs/seed-sde.yaml
+      kubectl: create -f evept-source/kubernetes/jobs/seed-sde.yaml
       wait_until_ready_selector: job=seed-eve-sde
