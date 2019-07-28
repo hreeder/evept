@@ -1,0 +1,47 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rolodex
+  labels:
+    app: rolodex
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rolodex
+  template:
+    metadata:
+      labels:
+        app: rolodex
+    spec:
+      containers:
+      - name: rolodex
+        image: evept/rolodex:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        env:
+        - name: EVEPT_AUTH0_DOMAIN
+          value: evept-dev.eu.auth0.com
+        - name: EVEPT_AUTH0_API_IDENTIFIER
+          value: https://api.evept-dev.err.wtf/
+        ports:
+        - name: http
+          containerPort: 8500
+...
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rolodex
+  labels:
+    app: rolodex
+spec:
+  selector:
+    app: rolodex
+  ports:
+  - name: http
+    port: 8500
+    targetPort: http
