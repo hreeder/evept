@@ -18,18 +18,22 @@ func main() {
 	webutils := common.GetWebUtilConfig()
 
 	// Begin HTTP work
+	mountedAt := "/rolodex"
+
 	router := mux.NewRouter()
 	middlewares := negroni.Classic()
 	middlewares.Use(negroni.HandlerFunc(webutils.GetJWTMiddleware().HandlerWithNext))
 	middlewares.Use(negroni.HandlerFunc(web.RequestParser))
 	middlewares.UseHandler(router)
 
-	router.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+	subRouter := mux.NewRouter().PathPrefix(mountedAt).Subrouter().StrictSlash(true)
+	subRouter.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		props := req.Context().Value("requestProperties").(*web.RequestProperties)
 		fmt.Println(props.Auth0User)
 
 		fmt.Fprintf(w, "This is an authenticated request")
 	})
 
+	router.PathPrefix(mountedAt).Handler(subRouter)
 	http.ListenAndServe(":8500", middlewares)
 }
