@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/hreeder/evept/util/db"
-	"github.com/hreeder/evept/util/web"
+	"github.com/hreeder/evept/pkg/util/db"
+	"github.com/hreeder/evept/pkg/util/web"
 )
 
 func getRequiredEnvVar(key string) string {

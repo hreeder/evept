@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/hreeder/evept/util/common"
-	"github.com/hreeder/evept/services/skillpath"
+	"github.com/hreeder/evept/pkg/skillpath"
+	"github.com/hreeder/evept/pkg/util/common"
 )
 
 func main() {

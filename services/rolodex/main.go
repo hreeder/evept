@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/hreeder/evept/util/common"
-	"github.com/hreeder/evept/util/web"
+	"github.com/hreeder/evept/pkg/util/common"
+	"github.com/hreeder/evept/pkg/util/web"
 
 	"github.com/gorilla/mux"
 	"github.com/urfave/negroni"
