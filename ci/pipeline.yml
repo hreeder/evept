@@ -7,12 +7,14 @@ resource_types:
     tag: "1.14"
 
 resources:
-- name: evept-source
+- name: evept-source-scripts
   type: git
   icon: github-circle
   source:
     uri: https://github.com/hreeder/evept.git
     branch: dev
+    paths:
+      - scripts/*
 
 - name: oneoffscripts-image
   type: docker-image
@@ -28,6 +30,7 @@ resources:
     certificate_authority: ((kube.cluster_ca))
     server: ((kube.cluster_url))
     token: ((kube.token))
+    namespace: evept
 
 groups:
 - name: support
@@ -38,16 +41,16 @@ groups:
 jobs:
 - name: build-push-oneoff
   plan:
-  - get: evept-source
+  - get: evept-source-scripts
     trigger: true
   - put: oneoffscripts-image
     params:
-      build: evept-source/scripts
+      build: evept-source-scripts/scripts
 
 - name: seed-eve-sde
   plan:
-  - get: evept-source
+  - get: evept-source-scripts
   - put: kube
     params:
-      kubectl: apply -f evept-source/kubernetes/jobs/seed-sde.yaml
+      kubectl: create -f evept-source-scripts/kubernetes/jobs/seed-sde.yaml
       wait_until_ready_selector: job=seed-eve-sde

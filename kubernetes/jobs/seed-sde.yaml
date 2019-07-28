@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  generateName:  seed-eve-sde
+  generateName:  seed-eve-sde-
   namespace: evept
   labels:
     job: seed-eve-sde
