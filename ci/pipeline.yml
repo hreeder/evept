@@ -25,6 +25,7 @@ resources:
     - pkg/rolodex/*
     - pkg/shared/*
     - pkg/util/*
+    - dockerfiles/rolodex.Dockerfile
 
 - name: evept-source-scripts
   type: git
@@ -60,14 +61,14 @@ resources:
     namespace: evept
 
 groups:
-- name: support
-  jobs:
-  - build-push-oneoff
-  - seed-eve-sde
 - name: services
   jobs:
   - build-push-rolodex
 #   - deploy-rolodex
+- name: support
+  jobs:
+  - build-push-oneoff
+  - seed-eve-sde
 
 jobs:
 - name: build-push-oneoff
@@ -93,6 +94,6 @@ jobs:
   - put: rolodex-image
     params:
       build: evept-source-rolodex
-      dockerfile: dockerfiles/rolodex.Dockerfile
+      dockerfile: evept-source-rolodex/dockerfiles/rolodex.Dockerfile
 
 # - name: deploy-rolodex
