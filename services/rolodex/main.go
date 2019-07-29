@@ -6,6 +6,7 @@ import (
 
 	"github.com/hreeder/evept/pkg/util/common"
 	"github.com/hreeder/evept/pkg/util/web"
+	"github.com/hreeder/evept/services/rolodex/routes"
 
 	"github.com/gorilla/mux"
 	"github.com/urfave/negroni"
@@ -27,12 +28,7 @@ func main() {
 	middlewares.UseHandler(router)
 
 	subRouter := mux.NewRouter().PathPrefix(mountedAt).Subrouter().StrictSlash(true)
-	subRouter.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		props := req.Context().Value("requestProperties").(*web.RequestProperties)
-		fmt.Println(props.Auth0User)
-
-		fmt.Fprintf(w, "This is an authenticated request")
-	})
+	subRouter.HandleFunc("/", routes.Index)
 
 	router.PathPrefix(mountedAt).Handler(subRouter)
 	http.ListenAndServe(":8500", middlewares)
