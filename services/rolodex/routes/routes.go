@@ -9,24 +9,22 @@ import (
 	"github.com/go-redis/redis"
 )
 
-type IndexResponse struct {
+// GenericMessageResponse does what the name suggests
+type GenericMessageResponse struct {
 	Message string
 }
 
+// Index is mounted at /
 func Index(w http.ResponseWriter, req *http.Request) {
 	props := req.Context().Value("requestProperties").(*web.RequestProperties)
 
-	fmt.Println("Connecting")
 	client := redis.NewClusterClient(&redis.ClusterOptions{
 		Addrs: []string{"evept-queue:6379"},
 	})
-	fmt.Println("connected")
 	client.Ping()
-	fmt.Println("pung")
 	client.Incr("testkey")
-	fmt.Println("Done")
 
-	web.ReturnJSON(w, &IndexResponse{
+	web.ReturnJSON(w, &GenericMessageResponse{
 		Message: fmt.Sprintf("Hello, %v", props.Auth0User),
 	})
 }
