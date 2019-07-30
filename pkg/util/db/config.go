@@ -14,10 +14,9 @@ type Config struct {
 	Password     string
 	HostName     string
 	DatabaseName string
-	SchemaName   string
 }
 
-// DB returns a database session
+// Get returns a database session
 func (config *Config) Get() *sqlx.DB {
 	db, err := sqlx.Connect("postgres", fmt.Sprintf("dbname=%v user=%v password=%v host=%v sslmode=disable", config.DatabaseName, config.Username, config.Password, config.HostName))
 	if err != nil {

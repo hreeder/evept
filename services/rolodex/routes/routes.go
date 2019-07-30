@@ -4,10 +4,21 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/hreeder/evept/pkg/util/db"
+	"github.com/hreeder/evept/pkg/util/eveesi"
+	"github.com/hreeder/evept/pkg/util/queue"
 	"github.com/hreeder/evept/pkg/util/web"
 
 	"github.com/go-redis/redis"
 )
+
+// Config represents quick access to global configs necessary
+type Config struct {
+	DBConfig    *db.Config
+	ESIConfig   *eveesi.Config
+	QueueConfig *queue.Config
+	WebConfig   *web.Config
+}
 
 // GenericMessageResponse does what the name suggests
 type GenericMessageResponse struct {
@@ -15,7 +26,7 @@ type GenericMessageResponse struct {
 }
 
 // Index is mounted at /
-func Index(w http.ResponseWriter, req *http.Request) {
+func (c *Config) Index(w http.ResponseWriter, req *http.Request) {
 	props := req.Context().Value("requestProperties").(*web.RequestProperties)
 
 	client := redis.NewClusterClient(&redis.ClusterOptions{

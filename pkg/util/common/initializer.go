@@ -6,6 +6,8 @@ import (
 	"os"
 
 	"github.com/hreeder/evept/pkg/util/db"
+	"github.com/hreeder/evept/pkg/util/eveesi"
+	"github.com/hreeder/evept/pkg/util/queue"
 	"github.com/hreeder/evept/pkg/util/web"
 )
 
@@ -15,6 +17,34 @@ func getRequiredEnvVar(key string) string {
 		panic(fmt.Sprintf("Required Environment Variable %v Not Set!", key))
 	}
 	return value
+}
+
+// GetESIConfig returns an eveesi.Config object
+func GetESIConfig() *eveesi.Config {
+	var esiDir string
+	esiDirOverride := os.Getenv("EVEPT_ESIDIR_OVERRIDE")
+	if esiDirOverride != "" {
+		esiDir = esiDirOverride
+	} else {
+		esiDir = "/etc/evept/esi"
+	}
+
+	ID, err := ioutil.ReadFile(fmt.Sprintf("%v/ID", esiDir))
+	if err != nil {
+		panic(err)
+	}
+
+	secret, err := ioutil.ReadFile(fmt.Sprintf("%v/secret", esiDir))
+	if err != nil {
+		panic(err)
+	}
+
+	return &eveesi.Config{
+		ClientID:     string(ID),
+		ClientSecret: string(secret),
+		UserAgent:    "evePT - Sklullus Dromulus - github.com/hreeder - TweetFleetSlack @sklullus",
+		CallbackURL:  "http://localhost:3000/esi/callback",
+	}
 }
 
 // GetWebUtilConfig returns a web.Config object ready to go
@@ -49,13 +79,18 @@ func GetDBConfig() *db.Config {
 
 	hostname := getRequiredEnvVar("EVEPT_DB_HOST")
 	databaseName := getRequiredEnvVar(("EVEPT_DB_NAME"))
-	schemaName := getRequiredEnvVar("EVEPT_DB_SCHEMA")
 
 	return &db.Config{
 		Username:     string(username),
 		Password:     string(password),
 		HostName:     hostname,
 		DatabaseName: databaseName,
-		SchemaName:   schemaName,
+	}
+}
+
+// GetQueueConfig returns a queue.Config object ready to go
+func GetQueueConfig() *queue.Config {
+	return &queue.Config{
+		Host: getRequiredEnvVar("EVEPT_QUEUE_HOST"),
 	}
 }

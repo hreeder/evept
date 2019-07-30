@@ -16,3 +16,9 @@ func ReturnJSON(w http.ResponseWriter, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(js)
 }
+
+// ReturnJSONWithCode is a helper function to easily return JSON data with a given code
+func ReturnJSONWithCode(w http.ResponseWriter, c int, data interface{}) {
+	w.WriteHeader(c)
+	ReturnJSON(w, data)
+}
