@@ -33,25 +33,22 @@ spec:
       initContainers:
       - name: migrations
         image: migrate/migrate
-        volumeMounts:
-        - name: evept-db-creds
-          mountPath: "/etc/evept/db"
-          readOnly: true
-        - name: github-token
-          mountPath: "/etc/evept/github"
-          readOnly: true
-        command:
-        - "migrate"
-        - "-source github://`cat /etc/evept/github/user`:`cat /etc/evept/github/token`@hreeder/evept/dbmigrations/rolodex#dev"
-        - "-database postgres://`cat /etc/evept/db/POSTGRES_USER`:`cat /etc/evept/db/POSTGRES_PASSWORD`@evept-db:5432/evept?sslmode=disable&x-migrations-table=migrations_rolodex"
+        envFrom:
+        - secretRef:
+            name: evept-db-auth
+        - secretRef:
+            name: github-token
+        command: ["/migrate"]
+        args:
+        - "-source"
+        - "github://$(user):$(token)@hreeder/evept/dbmigrations/rolodex#dev"
+        - "-database"
+        - "postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@evept-db:5432/evept?sslmode=disable&x-migrations-table=migrations_rolodex"
         - "up"
       volumes:
       - name: evept-db-creds
         secret:
           secretName: evept-db-auth
-      - name: github-token
-        secret:
-          secretName: github-token
 ...
 ---
 apiVersion: v1
