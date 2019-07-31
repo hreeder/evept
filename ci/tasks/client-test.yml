@@ -14,5 +14,7 @@ params:
   CI: "true"
 
 run:
-  path: ls
+  path: yarn
+  args:
+  - test
   dir: evept-source-client/client
