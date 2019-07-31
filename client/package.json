@@ -34,9 +34,9 @@
     "timeago-react": "^2.0.0"
   },
   "scripts": {
-    "build-sde": "node scripts/build-sde.js",
     "build": "yarn build-sde && react-scripts build",
-    "build:dev": "env-cmd yarn build",
+    "build-dev": "env-cmd yarn build",
+    "build-sde": "node scripts/build-sde.js",
     "start": "react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
