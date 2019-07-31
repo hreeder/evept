@@ -5,6 +5,10 @@ resource_types:
   source:
     repository: zlabjp/kubernetes-resource
     tag: "1.14"
+- name: s3sync
+  type: docker-image
+  source:
+    repository: firespring/concourse-s3-sync-resource
 
 resources:
 - name: evept-source
@@ -13,6 +17,15 @@ resources:
   source:
     uri: https://github.com/hreeder/evept.git
     branch: dev
+
+- name: evept-source-client
+  type: git
+  icon: github-circle
+  source:
+    uri: https://github.com/hreeder/evept.git
+    branch: dev
+    paths:
+    - client/*
 
 - name: evept-source-rolodex
   type: git
@@ -59,12 +72,24 @@ resources:
     server: ((kube.cluster_url))
     token: ((kube.token))
     namespace: evept
+- name: s3-evept-dev
+  type: s3sync
+  source:
+    access_key_id: ((aws.access_key_id))
+    secret_access_key: ((aws.secret_access_key))
+    bucket: evept-dev.err.wtf
+    region: eu-west-1
+    directory: evept-source-client/client/build
 
 groups:
 - name: services
   jobs:
   - build-push-rolodex
 #   - deploy-rolodex
+- name: frontend
+  jobs:
+  - test-client
+  - build-dev-client
 - name: support
   jobs:
   - build-push-oneoff
@@ -97,3 +122,20 @@ jobs:
       dockerfile: evept-source-rolodex/dockerfiles/rolodex.Dockerfile
 
 # - name: deploy-rolodex
+
+- name: test-client
+  plan:
+  - get: evept-source-client
+    trigger: true
+  - task: test
+    file: evept-source-client/ci/tasks/client-test.yml
+
+- name: build-dev-client
+  plan:
+  - get: evept-source-client
+    trigger: true
+    passed:
+    - test-client
+  - task: test
+    file: evept-source-client/ci/tasks/client-build-dev.yml
+  - put: s3-evept-dev

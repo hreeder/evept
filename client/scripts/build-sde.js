@@ -7,7 +7,7 @@ const extract = require('extract-zip'),
 
 // Get SDE if it doesn't exist
 // TODO: Work out a way to dynamically work out if this is the latest version
-const SDE_URL = "https://cdn1.eveonline.com/data/sde/tranquility/sde-20181009-TRANQUILITY.zip"
+const SDE_URL = "https://cdn1.eveonline.com/data/sde/tranquility/sde-20190625-TRANQUILITY.zip"
 const cwd = process.cwd()
 const sde_dir = `${cwd}/eve_sde`
 const output_dir = `${cwd}/public/sde`
