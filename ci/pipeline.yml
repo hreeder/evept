@@ -26,7 +26,7 @@ resources:
     branch: dev
     paths:
     - client/*
-    - ci/tasks/client*
+    - ci/tasks/yarn.yml
 
 - name: evept-source-rolodex
   type: git
@@ -82,6 +82,15 @@ resources:
     region: eu-west-1
     directory: evept-source-client/client/build
 
+- name: s3-evept-prod
+  type: s3sync
+  source:
+    access_key_id: ((aws.access_key_id))
+    secret_access_key: ((aws.secret_access_key))
+    bucket: evept.err.wtf
+    region: eu-west-1
+    directory: evept-source-client/client/build
+
 groups:
 - name: services
   jobs:
@@ -91,6 +100,7 @@ groups:
   jobs:
   - test-client
   - build-dev-client
+  - build-prod-client
 - name: support
   jobs:
   - build-push-oneoff
@@ -129,9 +139,13 @@ jobs:
   - get: evept-source-client
     trigger: true
   - task: install
-    file: evept-source-client/ci/tasks/client-install.yml
+    file: evept-source-client/ci/tasks/yarn.yml
+    vars:
+      command: install
   - task: test
-    file: evept-source-client/ci/tasks/client-test.yml
+    file: evept-source-client/ci/tasks/yarn.yml
+    vars:
+      command: test
 
 - name: build-dev-client
   plan:
@@ -140,9 +154,26 @@ jobs:
     passed:
     - test-client
   - task: install
-    file: evept-source-client/ci/tasks/client-install.yml
-  - task: build
-    file: evept-source-client/ci/tasks/client-build.yml
+    file: evept-source-client/ci/tasks/yarn.yml
     vars:
-      buildstage: build:dev
+      command: install
+  - task: build
+    file: evept-source-client/ci/tasks/yarn.yml
+    vars:
+      command: build:dev
   - put: s3-evept-dev
+
+- name: build-prod-client
+  plan:
+  - get: evept-source-client
+    passed:
+    - build-dev-client
+  - task: install
+    file: evept-source-client/ci/tasks/yarn.yml
+    vars:
+      command: install
+  - task: build
+    file: evept-source-client/ci/tasks/yarn.yml
+    vars:
+      command: build
+  - put: s3-evept-prod

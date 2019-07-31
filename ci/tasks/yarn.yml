@@ -19,5 +19,5 @@ params:
 run:
   path: yarn
   args:
-  - ((buildstage))
+  - ((command))
   dir: evept-source-client/client
