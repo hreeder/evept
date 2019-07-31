@@ -1,11 +1,19 @@
 package web
 
 import (
+	"os"
+
 	"github.com/rs/cors"
 )
 
 // CORS returns a CORS middleware
 func (c *Config) CORS() *cors.Cors {
+	debug := false
+
+	if os.Getenv("EVEPT_DEBUG") != "" {
+		debug = true
+	}
+
 	return cors.New(cors.Options{
 		AllowedOrigins: c.AllowedCORSOrigins,
 		AllowedHeaders: []string{
@@ -16,5 +24,6 @@ func (c *Config) CORS() *cors.Cors {
 			"Content-Type",
 			"X-Requested-With",
 		},
+		Debug: debug,
 	})
 }
