@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/hreeder/evept/pkg/util/web"
 )
@@ -30,26 +31,32 @@ func (c *Config) AddCharacter(w http.ResponseWriter, req *http.Request) {
 	var data AddCharacterExpectedInput
 	err := decoder.Decode(&data)
 	if err != nil {
-		web.ReturnJSONWithCode(w, http.StatusInternalServerError, &GenericMessageResponse{
-			Message: err.Error(),
+		web.ReturnJSONWithCode(w, http.StatusInternalServerError, &GenericErrorMessageResponse{
+			Message:      "failed processing at decoding data",
+			ErrorMessage: err.Error(),
 		})
+		return
 	}
 
 	authenticator := c.ESIConfig.GetSSOAuthenticator()
 	token, err := authenticator.TokenExchange(data.Code)
 	if err != nil {
-		web.ReturnJSONWithCode(w, http.StatusInternalServerError, &GenericMessageResponse{
-			Message: err.Error(),
+		web.ReturnJSONWithCode(w, http.StatusInternalServerError, &GenericErrorMessageResponse{
+			Message:      "failed processing at performing token exchange with ccp",
+			ErrorMessage: err.Error(),
 		})
+		return
 	}
 
 	tokenSource := authenticator.TokenSource(token)
 
 	verified, err := authenticator.Verify(tokenSource)
 	if err != nil {
-		web.ReturnJSONWithCode(w, http.StatusInternalServerError, &GenericMessageResponse{
-			Message: err.Error(),
+		web.ReturnJSONWithCode(w, http.StatusInternalServerError, &GenericErrorMessageResponse{
+			Message:      "failed processing at accessing <esi>/verify",
+			ErrorMessage: err.Error(),
 		})
+		return
 	}
 
 	newCharacter := &BarebonesCharacterEntry{
@@ -75,9 +82,7 @@ func (c *Config) AddCharacter(w http.ResponseWriter, req *http.Request) {
 	SET "refreshToken" = excluded."refreshToken"`, newCharacter)
 	tx.Commit()
 
-	// client := redis.NewClusterClient(c.QueueConfig.RedisClusterOptions())
-	// client.Ping()
-	// client.Incr("testkey")
+	c.QueueConfig.SubmitTask("rolodex:update:fast", strconv.FormatInt(int64(newCharacter.CharacterID), 10))
 
 	web.ReturnJSON(w, &GenericMessageResponse{
 		Message: fmt.Sprintf("Successfully added %v (%d)", newCharacter.CharacterName, newCharacter.CharacterID),

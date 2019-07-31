@@ -6,7 +6,7 @@ import './style.css'
 
 import { Route } from 'react-router-dom'
 import { NavLink } from 'reactstrap'
-import { Redirect, NavLink as RRNavLink } from 'react-router-dom'
+import { NavLink as RRNavLink } from 'react-router-dom'
 
 import Character from '../character'
 import CharacterList from '../characterList'
@@ -15,22 +15,24 @@ import ESIAuthCallback from '../esiCallbacks'
 import { getLoggedInUser, logOutUser } from '../../actions/auth'
 import { getTypeIDs, getGroupIDs } from '../../actions/sde'
 
+import { auth } from '../../App'
+
 class MainApp extends Component {
   componentDidMount() {
-    this.props.getLoggedInUser()
     this.props.getTypeIDs()
     this.props.getGroupIDs()
   }
 
   onClickLogOut = () => {
-    this.props.logOutUser()
+    auth.logout()
   }
   
   render() {
     // As this is the main class for our app, this is where we will check if the user is authenticated
     // If they are, the login component will send them back here
-    if (this.props.auth.user === null) {
-      return <Redirect to={{ pathname: "/auth/login", state: { from: this.props.location } }} />
+    if (!localStorage.getItem('auth0')) {
+      auth.login()
+      return <h1>UNAUTHENTICATED</h1>
     }
 
     return (

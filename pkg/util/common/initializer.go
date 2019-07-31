@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/hreeder/evept/pkg/util/db"
 	"github.com/hreeder/evept/pkg/util/eveesi"
@@ -51,10 +52,12 @@ func GetESIConfig() *eveesi.Config {
 func GetWebUtilConfig() *web.Config {
 	domain := getRequiredEnvVar("EVEPT_AUTH0_DOMAIN")
 	identifier := getRequiredEnvVar("EVEPT_AUTH0_API_IDENTIFIER")
+	allowedCorsOrigins := getRequiredEnvVar("EVEPT_ALLOWED_CORS_ORIGINS")
 
 	return &web.Config{
-		Auth0Domain:   domain,
-		APIIdentifier: identifier,
+		Auth0Domain:        domain,
+		APIIdentifier:      identifier,
+		AllowedCORSOrigins: strings.Split(allowedCorsOrigins, ";"),
 	}
 }
 

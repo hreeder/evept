@@ -12,6 +12,7 @@ func (c *Config) GetAPIClient() *goesi.APIClient {
 func (c *Config) GetSSOAuthenticator() *goesi.SSOAuthenticator {
 	scopes := []string{
 		"esi-skills.read_skills.v1",
+		"esi-skills.read_skillqueue.v1",
 	}
 	authenticator := goesi.NewSSOAuthenticatorV2(c.httpClient(), c.ClientID, c.ClientSecret, c.CallbackURL, scopes)
 

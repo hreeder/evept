@@ -25,6 +25,12 @@ type GenericMessageResponse struct {
 	Message string
 }
 
+// GenericErrorMessageResponse does what the name suggests
+type GenericErrorMessageResponse struct {
+	Message      string
+	ErrorMessage string
+}
+
 // Index is mounted at /
 func (c *Config) Index(w http.ResponseWriter, req *http.Request) {
 	props := req.Context().Value("requestProperties").(*web.RequestProperties)

@@ -22,23 +22,24 @@ class CharacterList extends Component {
   }
 
   render() {
-    if (this.props.characters.loading || this.props.sde.loadingTypeIDs) {
-      return <div className="row">
-        <main className="col-md-8 offset-md-2 px-4" role="main">
-          <PageHeading title="Characters" />
-          <div className="row">
-            Loading... Please Wait
-          </div>
-        </main>
-      </div>
-    }
-
     const addCharacterURL = getAuthURI()
-    const characters = this.props.characters.characters.sort((a, b) => {
-      if (!a.hasOwnProperty('total_sp')) return 1
-      if (!b.hasOwnProperty('total_sp')) return -1
-      return b.total_sp - a.total_sp
-    })
+    var inner = "";
+    if (this.props.characters.loading || this.props.sde.loadingTypeIDs) {
+      inner = "Loading... Please Wait"
+    } else {
+      const characters = this.props.characters.characters.sort((a, b) => {
+        if (!a.hasOwnProperty('total_sp')) return 1
+        if (!b.hasOwnProperty('total_sp')) return -1
+        return b.total_sp - a.total_sp
+      })
+
+      inner = characters.map(character => (
+        <CharacterIcon
+          key={character.resourceIdentifier}
+          character={character}
+        />
+      ))
+    }
 
     return (
       <div className="row">
@@ -47,12 +48,7 @@ class CharacterList extends Component {
             <a href={addCharacterURL} className="btn btn-outline-secondary"><Plus /></a>
           </PageHeading>
           <div className='row'>
-            {characters.map(character => (
-              <CharacterIcon
-                key={character.resourceIdentifier}
-                character={character}
-              />
-            ))}
+            {inner}
           </div>
         </main>
       </div>
