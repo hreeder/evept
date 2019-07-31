@@ -160,7 +160,7 @@ jobs:
   - task: build
     file: evept-source-client/ci/tasks/yarn.yml
     vars:
-      command: build:dev
+      command: build-dev
   - put: s3-evept-dev
 
 - name: build-prod-client
