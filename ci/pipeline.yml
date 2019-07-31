@@ -127,6 +127,8 @@ jobs:
   plan:
   - get: evept-source-client
     trigger: true
+  - task: install
+    file: evept-source-client/ci/tasks/client-install.yml
   - task: test
     file: evept-source-client/ci/tasks/client-test.yml
 
@@ -136,6 +138,8 @@ jobs:
     trigger: true
     passed:
     - test-client
-  - task: test
+  - task: install
+    file: evept-source-client/ci/tasks/client-install.yml
+  - task: build
     file: evept-source-client/ci/tasks/client-build-dev.yml
   - put: s3-evept-dev
