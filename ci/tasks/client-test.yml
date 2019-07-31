@@ -15,6 +15,4 @@ params:
 
 run:
   path: ls
-  args:
-  - node_modules
   dir: evept-source-client/client
