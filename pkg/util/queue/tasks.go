@@ -16,7 +16,9 @@ func getWorkingQueueName(name string) string {
 func (c *Config) SubmitTask(queueName string, identifier string) {
 	client := c.RedisClient()
 	submissionQueue := getSubmissionQueue(queueName)
-	client.LPush(submissionQueue, identifier)
+	c.Logger.Debugf("Submitting task to %v with identifier %v", submissionQueue, identifier)
+	result := client.LPush(submissionQueue, identifier)
+	c.Logger.Debugf("Submitted with return value %v", result)
 }
 
 // GetTask returns a task to be worked on

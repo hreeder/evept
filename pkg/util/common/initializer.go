@@ -10,6 +10,8 @@ import (
 	"github.com/hreeder/evept/pkg/util/eveesi"
 	"github.com/hreeder/evept/pkg/util/queue"
 	"github.com/hreeder/evept/pkg/util/web"
+
+	"github.com/juju/loggo"
 )
 
 func getRequiredEnvVar(key string) string {
@@ -92,8 +94,9 @@ func GetDBConfig() *db.Config {
 }
 
 // GetQueueConfig returns a queue.Config object ready to go
-func GetQueueConfig() *queue.Config {
+func GetQueueConfig(logger loggo.Logger) *queue.Config {
 	return &queue.Config{
-		Host: getRequiredEnvVar("EVEPT_QUEUE_HOST"),
+		Host:   getRequiredEnvVar("EVEPT_QUEUE_HOST"),
+		Logger: logger,
 	}
 }

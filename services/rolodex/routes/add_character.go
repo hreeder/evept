@@ -82,6 +82,7 @@ func (c *Config) AddCharacter(w http.ResponseWriter, req *http.Request) {
 	SET "refreshToken" = excluded."refreshToken"`, newCharacter)
 	tx.Commit()
 
+	c.Logger.Debugf("Character Added, Submitting to Redis")
 	c.QueueConfig.SubmitTask("rolodex:update:fast", strconv.FormatInt(int64(newCharacter.CharacterID), 10))
 
 	web.ReturnJSON(w, &GenericMessageResponse{

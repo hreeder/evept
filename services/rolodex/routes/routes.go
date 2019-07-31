@@ -10,6 +10,7 @@ import (
 	"github.com/hreeder/evept/pkg/util/web"
 
 	"github.com/go-redis/redis"
+	"github.com/juju/loggo"
 )
 
 // Config represents quick access to global configs necessary
@@ -18,6 +19,7 @@ type Config struct {
 	ESIConfig   *eveesi.Config
 	QueueConfig *queue.Config
 	WebConfig   *web.Config
+	Logger		loggo.Logger
 }
 
 // GenericMessageResponse does what the name suggests
