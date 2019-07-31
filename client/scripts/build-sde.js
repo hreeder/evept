@@ -106,6 +106,8 @@ async function run() {
   processGroupIDs()
 }
 
-console.log("[build-sde] Starting")
-run()
-console.log("[build-sde] Finished")
+(async () => {
+  console.log("[build-sde] Starting")
+  await run()
+  console.log("[build-sde] Finished")
+})()
