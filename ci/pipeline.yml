@@ -26,6 +26,7 @@ resources:
     branch: dev
     paths:
     - client/*
+    - ci/tasks/client*
 
 - name: evept-source-rolodex
   type: git
