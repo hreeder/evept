@@ -10,6 +10,9 @@ image_resource:
 inputs:
 - name: evept-source-client
 
+outputs:
+- name: evept-source-client
+
 params:
   CI: "true"
 
