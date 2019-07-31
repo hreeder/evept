@@ -10,11 +10,14 @@ image_resource:
 inputs:
 - name: evept-source-client
 
+outputs:
+- name: evept-source-client
+
 params:
   CI: "true"
 
 run:
   path: yarn
   args:
-  - build:dev
+  - ((buildstage))
   dir: evept-source-client/client

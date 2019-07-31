@@ -142,5 +142,7 @@ jobs:
   - task: install
     file: evept-source-client/ci/tasks/client-install.yml
   - task: build
-    file: evept-source-client/ci/tasks/client-build-dev.yml
+    file: evept-source-client/ci/tasks/client-build.yml
+    vars:
+      buildstage: build:dev
   - put: s3-evept-dev
