@@ -81,6 +81,8 @@ resources:
     bucket: evept-dev.err.wtf
     region: eu-west-1
     directory: evept-source-client/client/build
+    options:
+    - "--acl public-read"
 
 - name: s3-evept-prod
   type: s3sync
@@ -90,6 +92,8 @@ resources:
     bucket: evept.err.wtf
     region: eu-west-1
     directory: evept-source-client/client/build
+    options:
+    - "--acl public-read"
 
 groups:
 - name: services
