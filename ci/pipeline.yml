@@ -41,6 +41,19 @@ resources:
     - pkg/util/*
     - dockerfiles/rolodex.Dockerfile
 
+- name: evept-source-rolodex-updater
+  type: git
+  icon: github-circle
+  source:
+    uri: https://github.com/hreeder/evept.git
+    branch: dev
+    paths:
+    - cmd/characterUpdater/*
+    - pkg/rolodex/*
+    - pkg/shared/*
+    - pkg/util/*
+    - dockerfiles/rolodex-updater.Dockerfile
+
 - name: evept-source-scripts
   type: git
   icon: github-circle
@@ -63,6 +76,14 @@ resources:
   icon: docker
   source:
     repository: evept/rolodex
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
+  
+- name: rolodex-updater-image
+  type: docker-image
+  icon: docker
+  source:
+    repository: evept/rolodex-updater
     username: ((dockerhub.username))
     password: ((dockerhub.password))
 
@@ -100,6 +121,9 @@ groups:
   jobs:
   - build-push-rolodex
 #   - deploy-rolodex
+- name: commands
+  jobs:
+  - build-push-rolodex-updater
 - name: frontend
   jobs:
   - test-client
@@ -135,6 +159,16 @@ jobs:
     params:
       build: evept-source-rolodex
       dockerfile: evept-source-rolodex/dockerfiles/rolodex.Dockerfile
+
+- name: build-push-rolodex-updater
+  plan:
+  - get: evept-source-rolodex-updater
+    trigger: true
+  - put: rolodex-updater-image
+    params:
+      build: evept-source-rolodex-updater
+      dockerfile: evept-source-rolodex-updater/dockerfiles/rolodex-updater.Dockerfile
+
 
 # - name: deploy-rolodex
 
