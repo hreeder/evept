@@ -63,7 +63,7 @@ func (c *Config) AddCharacter(w http.ResponseWriter, req *http.Request) {
 		CharacterID:   verified.CharacterID,
 		CharacterName: verified.CharacterName,
 		Owner:         props.Auth0User,
-		RefreshToken:  data.Code,
+		RefreshToken:  token.RefreshToken,
 	}
 
 	db := c.DBConfig.Get()

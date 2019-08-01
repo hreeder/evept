@@ -1,8 +1,26 @@
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rolodex
+  namespace: evept
+  labels:
+    app: rolodex
+data:
+  EVEPT_AUTH0_API_IDENTIFIER: https://api.evept-dev.err.wtf/
+  EVEPT_AUTH0_DOMAIN: evept-dev.eu.auth0.com
+  EVEPT_QUEUE_HOST: evept-queue
+  EVEPT_DB_HOST: evept-db
+  EVEPT_DB_NAME: evept
+  EVEPT_ALLOWED_CORS_ORIGINS: https://evept-dev.err.wtf
+  EVEPT_DEBUG: "true"
+...
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: rolodex
+  namespace: evept
   labels:
     app: rolodex
 spec:
@@ -22,14 +40,17 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "500m"
-        env:
-        - name: EVEPT_AUTH0_DOMAIN
-          value: evept-dev.eu.auth0.com
-        - name: EVEPT_AUTH0_API_IDENTIFIER
-          value: https://api.evept-dev.err.wtf/
+        envFrom:
+        - configMapRef:
+            name: rolodex
         ports:
         - name: http
           containerPort: 8500
+        volumeMounts:
+        - name: evept-db-creds
+          mountPath: /etc/evept/db/credentials
+        - name: evept-esi
+          mountPath: /etc/evept/esi
       initContainers:
       - name: migrations
         image: migrate/migrate
@@ -49,12 +70,16 @@ spec:
       - name: evept-db-creds
         secret:
           secretName: evept-db-auth
+      - name: evept-esi
+        secret:
+          secretName: esi-credentials-dev
 ...
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: rolodex
+  namespace: evept
   labels:
     app: rolodex
 spec:

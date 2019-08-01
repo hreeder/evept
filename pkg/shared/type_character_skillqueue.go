@@ -1,15 +1,46 @@
 package shared
 
-import "time"
+import (
+	"database/sql"
+	"time"
+
+	"github.com/jmoiron/sqlx"
+)
 
 // CharacterSkillqueueEntry is a single skill in the queue that a character may have
 type CharacterSkillqueueEntry struct {
-	FinishDate      time.Time `dynamo:"finish_date"`
-	FinishedLevel   int32     `dynamo:"finished_level"`
-	LevelEndSp      int32     `dynamo:"level_end_sp"`
-	LevelStartSp    int32     `dynamo:"level_start_sp"`
-	QueuePosition   int32     `dynamo:"queue_position"`
-	SkillID         int32     `dynamo:"skill_id"`
-	StartDate       time.Time `dynamo:"start_date"`
-	TrainingStartSp int32     `dynamo:"training_start_sp"`
+	CharacterID     int32     `db:"characterID"`
+	SkillID         int32     `db:"skillID"`
+	QueuePosition   int32     `db:"queuePosition"`
+	StartDate       time.Time `db:"startDate"`
+	FinishDate      time.Time `db:"finishDate"`
+	FinishedLevel   int32     `db:"finishedLevel"`
+	TrainingStartSp int32     `db:"trainingStartSP"`
+	LevelStartSp    int32     `db:"levelStartSP"`
+	LevelEndSp      int32     `db:"levelEndSP"`
+}
+
+// Save writes this to the DB
+func (csqe *CharacterSkillqueueEntry) Save(tx *sqlx.Tx) (sql.Result, error) {
+	return tx.NamedExec(`INSERT INTO public."characterSkillQueue" (
+		"characterID",
+		"skillID",
+		"queuePosition",
+		"startDate",
+		"finishDate",
+		"finishedLevel",
+		"trainingStartSP",
+		"levelStartSP",
+		"levelEndSP"
+	) VALUES (
+		:characterID,
+		:skillID,
+		:queuePosition,
+		:startDate,
+		:finishDate,
+		:finishedLevel,
+		:trainingStartSP,
+		:levelStartSP,
+		:levelEndSP
+	)`, csqe)
 }

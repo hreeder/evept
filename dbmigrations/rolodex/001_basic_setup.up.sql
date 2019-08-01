@@ -38,17 +38,15 @@ CREATE TABLE IF NOT EXISTS public."characterAttributes" (
 );
 
 CREATE TABLE IF NOT EXISTS public."characterSkills" (
-    "characterSkillID" SERIAL NOT NULL,
     "characterID" INTEGER NOT NULL,
     "skillID" INTEGER NOT NULL,
     "skillpointsInSkill" INTEGER,
     "trainedSkillLevel" INTEGER,
     "activeSkillLevel" INTEGER,
-    PRIMARY KEY("characterSkillID")
+    PRIMARY KEY("characterID", "skillID")
 );
 
 CREATE TABLE IF NOT EXISTS public."characterSkillQueue" (
-    "queueEntryID" SERIAL NOT NULL,
     "characterID" INTEGER NOT NULL,
     "skillID" INTEGER NOT NULL,
     "queuePosition" INTEGER,
@@ -58,5 +56,5 @@ CREATE TABLE IF NOT EXISTS public."characterSkillQueue" (
     "trainingStartSP" INTEGER,
     "levelStartSP" INTEGER,
     "levelEndSP" INTEGER,
-    PRIMARY KEY("queueEntryID")
+    PRIMARY KEY("characterID", "skillID", "finishedLevel")
 );

@@ -29,3 +29,19 @@ func (c *Config) GetTask(queueName string) (string, error) {
 	result := client.RPopLPush(submissionQueue, workingQueue)
 	return result.Val(), result.Err()
 }
+
+// GetNumberOfWaitingTasks returns how many tasks are waiting
+func (c *Config) GetNumberOfWaitingTasks(queueName string) (int, error) {
+	client := c.RedisClient()
+	submissionQueue := getSubmissionQueue(queueName)
+	result := client.LLen(submissionQueue)
+
+	return int(result.Val()), result.Err()
+}
+
+// CompleteTask removes a task from the work queue
+func (c *Config) CompleteTask(queueName string, identifier string) {
+	client := c.RedisClient()
+	workingQueue := getWorkingQueueName(queueName)
+	client.LRem(workingQueue, 1, identifier)
+}

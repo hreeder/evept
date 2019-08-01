@@ -15,9 +15,11 @@ require (
 	github.com/hreeder/evept/services v0.0.0-20190712091235-f1616586ca2e
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/joho/godotenv v1.3.0 // indirect
+	github.com/juju/loggo v0.0.0-20190526231331-6e530bcce5d8
 	github.com/lib/pq v1.2.0
 	github.com/rs/cors v1.6.0
 	github.com/smartystreets/goconvey v0.0.0-20190710185942-9d28bd7c0945 // indirect
+	github.com/stretchr/testify v1.3.0 // indirect
 	github.com/urfave/negroni v1.0.0
 	golang.org/x/oauth2 v0.0.0-20181120190819-8f65e3013eba
 )
