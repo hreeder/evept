@@ -24,6 +24,7 @@ class SkillHighlight extends Component {
   }
 
   getLevel(typeID, showName=false, level="X") {
+    if (this.props.character.getSkills().length === 0) return ""
     if (!this.props.typeIDs.hasOwnProperty(typeID)) return ""
     
     const found_skill = this.props.character.skills.filter(s => s.skill_id === typeID)

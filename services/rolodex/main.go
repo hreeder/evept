@@ -49,10 +49,17 @@ func main() {
 	subRouter := mux.NewRouter().PathPrefix(mountedAt).Subrouter().StrictSlash(true)
 	subRouter.HandleFunc("/", r.Index)
 	subRouter.HandleFunc("/characters", r.ListCharacters)
+	subRouter.HandleFunc("/characters/{characterID}/skills", r.ListCharacterSkills)
 	subRouter.HandleFunc("/esi/addchar", r.AddCharacter).Methods("POST")
 
 	router.PathPrefix(mountedAt).Handler(authenticatedMw.With(
 		negroni.Wrap(subRouter),
 	))
-	commonMw.Run(":8500")
+
+	port := "8500"
+	envPort := os.Getenv("PORT")
+	if envPort != "" {
+		port = envPort
+	}
+	commonMw.Run(fmt.Sprintf(":%v", port))
 }

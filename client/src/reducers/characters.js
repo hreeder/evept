@@ -29,6 +29,14 @@ export default function (state = DEFAULT_STATE, action) {
       return { ...state, viewPreferences: { ...state.viewPreferences, expandQueue: !state.viewPreferences.expandQueue } }
     }
 
+    case "characters.getCharacterSkills_FULFILLED": {
+      let characters = [...state.characters]
+      var target = characters.filter((it) => it.characterId === parseInt(action.payload.data.characterId, 10))[0]
+      characters.splice(characters.indexOf(target), 1)
+      target.skills =action.payload.data.skills
+      return { ...state, characters: [...characters, target] }
+    }
+
     default: {
       return state
     }

@@ -46,7 +46,7 @@ export class CharacterIcon extends Component {
             <CardText>
               <small className="text-muted">Last updated: {last_updated}</small>
             </CardText>
-            <Button tag={Link} to={`/character/${character.resourceIdentifier}`} block>Select</Button>
+            <Button tag={Link} to={`/character/${character.characterId}`} block>Select</Button>
           </CardBody>
         </Card>
         <br />

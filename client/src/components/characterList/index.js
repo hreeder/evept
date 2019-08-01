@@ -35,7 +35,7 @@ class CharacterList extends Component {
 
       inner = characters.map(character => (
         <CharacterIcon
-          key={character.resourceIdentifier}
+          key={character.characterId}
           character={character}
         />
       ))

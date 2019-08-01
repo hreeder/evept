@@ -9,17 +9,17 @@ import (
 
 // Character represents a character in the database
 type Character struct {
-	CharacterID   int32  `db:"characterID"`
-	CharacterName string `db:"characterName"`
-	Owner         string `db:"owner"`
-	RefreshToken  string `db:"refreshToken"`
+	CharacterID   int32  `db:"characterID" json:"characterId"`
+	CharacterName string `db:"characterName" json:"characterName"`
+	Owner         string `db:"owner" json:"-"`
+	RefreshToken  string `db:"refreshToken" json:"-"`
 
-	LastUpdated pq.NullTime `db:"lastUpdated"`
+	LastUpdated pq.NullTime `db:"lastUpdated" json:"last_updated"`
 
-	CorporationID  sql.NullInt64   `db:"corporationID"`
-	SecurityStatus sql.NullFloat64 `db:"securityStatus"`
-	TotalSp        sql.NullInt64   `db:"totalSkillpoints"`
-	UnallocatedSp  sql.NullInt64   `db:"unallocatedSkillpoints"`
+	CorporationID  sql.NullInt64   `db:"corporationID" json:"corporationId"`
+	SecurityStatus sql.NullFloat64 `db:"securityStatus" json:"securityStatus"`
+	TotalSp        sql.NullInt64   `db:"totalSkillpoints" json:"totalSkillpoints"`
+	UnallocatedSp  sql.NullInt64   `db:"unallocatedSkillpoints" json:"unallocatedSkillpoints"`
 }
 
 // CharacterFromDB will get the character object from the DB

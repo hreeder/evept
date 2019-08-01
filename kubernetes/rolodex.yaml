@@ -1,21 +1,4 @@
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: rolodex
-  namespace: evept
-  labels:
-    app: rolodex
-data:
-  EVEPT_AUTH0_API_IDENTIFIER: https://api.evept-dev.err.wtf/
-  EVEPT_AUTH0_DOMAIN: evept-dev.eu.auth0.com
-  EVEPT_QUEUE_HOST: evept-queue
-  EVEPT_DB_HOST: evept-db
-  EVEPT_DB_NAME: evept
-  EVEPT_ALLOWED_CORS_ORIGINS: https://evept-dev.err.wtf
-  EVEPT_DEBUG: "true"
-...
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -42,7 +25,7 @@ spec:
             cpu: "500m"
         envFrom:
         - configMapRef:
-            name: rolodex
+            name: evept-common
         ports:
         - name: http
           containerPort: 8500
