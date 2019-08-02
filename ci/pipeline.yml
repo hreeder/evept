@@ -54,6 +54,18 @@ resources:
     - pkg/util/*
     - dockerfiles/rolodex-updater.Dockerfile
 
+- name: evept-source-dispatch-ten
+  type: git
+  icon: github-circle
+  source:
+    uri: https://github.com/hreeder/evept.git
+    branch: dev
+    paths:
+    - cmd/dispatchTen/*
+    - pkg/shared/*
+    - pkg/util/*
+    - dockerfiles/dispatch-ten.Dockerfile
+
 - name: evept-source-scripts
   type: git
   icon: github-circle
@@ -84,6 +96,14 @@ resources:
   icon: docker
   source:
     repository: evept/rolodex-updater
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
+
+- name: dispatch-ten-image
+  type: docker-image
+  icon: docker
+  source:
+    repository: evept/dispatch-ten
     username: ((dockerhub.username))
     password: ((dockerhub.password))
 
@@ -124,6 +144,7 @@ groups:
 - name: commands
   jobs:
   - build-push-rolodex-updater
+  - build-push-dispatch-ten
 - name: frontend
   jobs:
   - test-client
@@ -169,8 +190,14 @@ jobs:
       build: evept-source-rolodex-updater
       dockerfile: evept-source-rolodex-updater/dockerfiles/rolodex-updater.Dockerfile
 
-
-# - name: deploy-rolodex
+- name: build-push-dispatch-ten
+  plan:
+  - get: evept-source-dispatch-ten
+    trigger: true
+  - put: dispatch-ten-image
+    params:
+      build: evept-source-dispatch-ten
+      dockerfile: evept-source-dispatch-ten/dockerfiles/dispatch-ten.Dockerfile
 
 - name: test-client
   plan:
