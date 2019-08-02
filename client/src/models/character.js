@@ -1,6 +1,9 @@
 import { getRomanNumeral } from '../util/romanNumerals'
 
 class Character {
+  skillsLoaded = false
+  skillqueueLoaded = false
+
   fromJSON(json) {
     Object.keys(json).forEach(key => this[key] = json[key])
     if (this.hasOwnProperty("last_updated")) {

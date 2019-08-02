@@ -9,7 +9,7 @@ import { Route, Redirect } from 'react-router-dom'
 import CharacterDashboard from './dashboard'
 import CharacterSkills from './skills'
 
-import { getCharacters, getCharacterSkills } from '../../actions/characters'
+import { getCharacters, getCharacterSkills, getCharacterSkillqueue } from '../../actions/characters'
 
 export class Character extends Component {
   componentDidMount() {
@@ -37,7 +37,8 @@ export class Character extends Component {
       }
     })
     if (character === null && this.props.characters.loaded) return <Redirect to={{ pathname: "/characters" }} />
-    if (character !== null && character.getSkills().length === 0) this.props.getCharacterSkills(character.characterId)
+    if (character !== null && !character.skillsLoaded) this.props.getCharacterSkills(character.characterId)
+    if (character !== null && !character.skillqueueLoaded) this.props.getCharacterSkillqueue(character.characterId)
 
     return (
       <div className="row">
@@ -65,5 +66,6 @@ export default connect((store) => {
   }
 }, (dispatch) => bindActionCreators({
   getCharacters: getCharacters,
-  getCharacterSkills: getCharacterSkills
+  getCharacterSkills: getCharacterSkills,
+  getCharacterSkillqueue: getCharacterSkillqueue
 }, dispatch))(Character)

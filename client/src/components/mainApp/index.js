@@ -32,7 +32,7 @@ class MainApp extends Component {
     // If they are, the login component will send them back here
     if (!localStorage.getItem('auth0')) {
       auth.login()
-      return <h1>UNAUTHENTICATED</h1>
+      return <div>Not Authenticated, Redirecting</div>
     }
 
     return (

@@ -32,6 +32,7 @@ class Auth {
           ...authResult,
           expiresAt: authResult.expiresIn * 1000 + new Date().getTime()
         }))
+        window.location.href = "/"
       } else {
         console.log("handleAuth FAILED")
         console.log(err)

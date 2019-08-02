@@ -50,6 +50,7 @@ func main() {
 	subRouter.HandleFunc("/", r.Index)
 	subRouter.HandleFunc("/characters", r.ListCharacters)
 	subRouter.HandleFunc("/characters/{characterID}/skills", r.ListCharacterSkills)
+	subRouter.HandleFunc("/characters/{characterID}/skillqueue", r.ListCharacterSkillQueue)
 	subRouter.HandleFunc("/esi/addchar", r.AddCharacter).Methods("POST")
 
 	router.PathPrefix(mountedAt).Handler(authenticatedMw.With(

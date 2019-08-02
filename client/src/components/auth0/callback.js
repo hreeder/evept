@@ -8,7 +8,7 @@ const Auth0Callback = props => {
   }
   return (
     <div>
-      Auth Callback
+      Loading...
     </div>
   )
 }

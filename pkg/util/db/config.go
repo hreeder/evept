@@ -14,14 +14,19 @@ type Config struct {
 	Password     string
 	HostName     string
 	DatabaseName string
+
+	connection *sqlx.DB
 }
 
 // Get returns a database session
 func (config *Config) Get() *sqlx.DB {
-	db, err := sqlx.Connect("postgres", fmt.Sprintf("dbname=%v user=%v password=%v host=%v sslmode=disable", config.DatabaseName, config.Username, config.Password, config.HostName))
-	if err != nil {
-		log.Fatalln(err)
+	if config.connection == nil {
+		db, err := sqlx.Connect("postgres", fmt.Sprintf("dbname=%v user=%v password=%v host=%v sslmode=disable", config.DatabaseName, config.Username, config.Password, config.HostName))
+		if err != nil {
+			log.Fatalln(err)
+		}
+		config.connection = db
 	}
 
-	return db
+	return config.connection
 }

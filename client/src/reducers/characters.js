@@ -31,9 +31,19 @@ export default function (state = DEFAULT_STATE, action) {
 
     case "characters.getCharacterSkills_FULFILLED": {
       let characters = [...state.characters]
-      var target = characters.filter((it) => it.characterId === parseInt(action.payload.data.characterId, 10))[0]
+      const target = characters.filter((it) => it.characterId === parseInt(action.payload.data.characterId, 10))[0]
       characters.splice(characters.indexOf(target), 1)
-      target.skills =action.payload.data.skills
+      target.skills = action.payload.data.skills
+      target.skillsLoaded = true
+      return { ...state, characters: [...characters, target] }
+    }
+
+    case "characters.getCharacterSkillqueue_FULFILLED": {
+      let characters = [...state.characters]
+      const target = characters.filter((it) => it.characterId === parseInt(action.payload.data.characterId, 10))[0]
+      characters.splice(characters.indexOf(target), 1)
+      target.skillqueue = action.payload.data.skillqueue
+      target.skillqueueLoaded = true
       return { ...state, characters: [...characters, target] }
     }
 
