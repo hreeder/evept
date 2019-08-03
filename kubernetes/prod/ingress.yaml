@@ -1,0 +1,15 @@
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: evept
+  namespace: evept-prod
+spec:
+  rules:
+  - host: api.evept.err.wtf
+    http:
+      paths:
+      - path: /rolodex
+        backend:
+          serviceName: rolodex
+          servicePort: 8500

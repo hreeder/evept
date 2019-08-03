@@ -30,4 +30,4 @@ spec:
               secretName: evept-db-auth
           - name: evept-esi
             secret:
-              secretName: esi-credentials-dev
+              secretName: esi-credentials

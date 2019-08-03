@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: evept-common
-  namespace: evept
+  namespace: evept-dev
 data:
   # Web Stuff
   EVEPT_AUTH0_API_IDENTIFIER: https://api.evept-dev.err.wtf/

@@ -3,7 +3,6 @@ apiVersion: kubedb.com/v1alpha1
 kind: Postgres
 metadata:
   name: evept-db
-  namespace: evept
 spec:
   version: "10.2-v2"
   storageType: Durable
@@ -16,8 +15,7 @@ spec:
     resources:
       requests:
         storage: 10Gi
-  # terminationPolicy: DoNotTerminate
-  terminationPolicy: WipeOut
+  terminationPolicy: DoNotTerminate
   updateStrategy:
     type: RollingUpdate
   podTemplate:

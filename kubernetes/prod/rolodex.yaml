@@ -1,0 +1,72 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rolodex
+  labels:
+    app: rolodex
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rolodex
+  template:
+    metadata:
+      labels:
+        app: rolodex
+    spec:
+      containers:
+      - name: rolodex
+        image: evept/rolodex:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        envFrom:
+        - configMapRef:
+            name: evept-common
+        ports:
+        - name: http
+          containerPort: 8500
+        volumeMounts:
+        - name: evept-db-creds
+          mountPath: /etc/evept/db/credentials
+        - name: evept-esi
+          mountPath: /etc/evept/esi
+      initContainers:
+      - name: migrations
+        image: migrate/migrate
+        envFrom:
+        - secretRef:
+            name: evept-db-auth
+        - secretRef:
+            name: github-token
+        command: ["/migrate"]
+        args:
+        - "-source"
+        - "github://$(user):$(token)@hreeder/evept/dbmigrations/rolodex"
+        - "-database"
+        - "postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@evept-db:5432/evept?sslmode=disable&x-migrations-table=migrations_rolodex"
+        - "up"
+      volumes:
+      - name: evept-db-creds
+        secret:
+          secretName: evept-db-auth
+      - name: evept-esi
+        secret:
+          secretName: esi-credentials
+...
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rolodex
+  labels:
+    app: rolodex
+spec:
+  selector:
+    app: rolodex
+  ports:
+  - name: http
+    port: 8500
+    targetPort: http

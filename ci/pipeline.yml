@@ -5,76 +5,22 @@ resource_types:
   source:
     repository: zlabjp/kubernetes-resource
     tag: "1.14"
+
 - name: s3sync
   type: docker-image
   source:
     repository: firespring/concourse-s3-sync-resource
 
 resources:
-- name: evept-source
-  type: git
-  icon: github-circle
+# Generic
+- name: kube
+  type: kube
   source:
-    uri: https://github.com/hreeder/evept.git
-    branch: dev
-
-- name: evept-source-client
-  type: git
-  icon: github-circle
-  source:
-    uri: https://github.com/hreeder/evept.git
-    branch: dev
-    paths:
-    - client/*
-    - ci/tasks/yarn.yml
-
-- name: evept-source-rolodex
-  type: git
-  icon: github-circle
-  source:
-    uri: https://github.com/hreeder/evept.git
-    branch: dev
-    paths:
-    - services/rolodex/*
-    - pkg/rolodex/*
-    - pkg/shared/*
-    - pkg/util/*
-    - dockerfiles/rolodex.Dockerfile
-
-- name: evept-source-rolodex-updater
-  type: git
-  icon: github-circle
-  source:
-    uri: https://github.com/hreeder/evept.git
-    branch: dev
-    paths:
-    - cmd/characterUpdater/*
-    - pkg/rolodex/*
-    - pkg/shared/*
-    - pkg/util/*
-    - dockerfiles/rolodex-updater.Dockerfile
-
-- name: evept-source-dispatch-ten
-  type: git
-  icon: github-circle
-  source:
-    uri: https://github.com/hreeder/evept.git
-    branch: dev
-    paths:
-    - cmd/dispatchTen/*
-    - pkg/shared/*
-    - pkg/util/*
-    - dockerfiles/dispatch-ten.Dockerfile
-
-- name: evept-source-scripts
-  type: git
-  icon: github-circle
-  source:
-    uri: https://github.com/hreeder/evept.git
-    branch: dev
-    paths:
-    - scripts/*
-
+    certificate_authority: ((kube.cluster_ca))
+    server: ((kube.cluster_url))
+    token: ((kube.token))
+    namespace: evept
+    
 - name: oneoffscripts-image
   type: docker-image
   icon: docker
@@ -107,138 +53,353 @@ resources:
     username: ((dockerhub.username))
     password: ((dockerhub.password))
 
-- name: kube
-  type: kube
-  source:
-    certificate_authority: ((kube.cluster_ca))
-    server: ((kube.cluster_url))
-    token: ((kube.token))
-    namespace: evept
+# Dev
 - name: s3-evept-dev
   type: s3sync
-  source:
+  source: &s3-source
     access_key_id: ((aws.access_key_id))
     secret_access_key: ((aws.secret_access_key))
     bucket: evept-dev.err.wtf
     region: eu-west-1
-    directory: evept-source-client/client/build
+    directory: evept-source-dev-client/client/build
     options:
     - "--acl public-read"
 
+- name: evept-source-dev
+  type: git
+  icon: github-circle
+  source: &repo-source
+    uri: https://github.com/hreeder/evept.git
+    branch: dev
+
+- name: evept-source-dev-client
+  type: git
+  icon: github-circle
+  source: &repo-source-client
+    uri: https://github.com/hreeder/evept.git
+    branch: dev
+    paths:
+    - client/*
+    - ci/tasks/yarn.yml
+
+- name: evept-source-dev-rolodex
+  type: git
+  icon: github-circle
+  source: &repo-source-rolodex
+    uri: https://github.com/hreeder/evept.git
+    branch: dev
+    paths:
+    - services/rolodex/*
+    - pkg/rolodex/*
+    - pkg/shared/*
+    - pkg/util/*
+    - dockerfiles/rolodex.Dockerfile
+
+- name: evept-source-dev-rolodex-updater
+  type: git
+  icon: github-circle
+  source: &repo-source-rolodex-updater
+    uri: https://github.com/hreeder/evept.git
+    branch: dev
+    paths:
+    - cmd/characterUpdater/*
+    - pkg/rolodex/*
+    - pkg/shared/*
+    - pkg/util/*
+    - dockerfiles/rolodex-updater.Dockerfile
+
+- name: evept-source-dev-dispatch-ten
+  type: git
+  icon: github-circle
+  source: &repo-source-dispatch-ten
+    uri: https://github.com/hreeder/evept.git
+    branch: dev
+    paths:
+    - cmd/dispatchTen/*
+    - pkg/shared/*
+    - pkg/util/*
+    - dockerfiles/dispatch-ten.Dockerfile
+
+- name: evept-source-dev-scripts
+  type: git
+  icon: github-circle
+  source: &repo-source-scripts
+    uri: https://github.com/hreeder/evept.git
+    branch: dev
+    paths:
+    - scripts/*
+
+# Prod
 - name: s3-evept-prod
   type: s3sync
   source:
-    access_key_id: ((aws.access_key_id))
-    secret_access_key: ((aws.secret_access_key))
+    <<: *s3-source
     bucket: evept.err.wtf
-    region: eu-west-1
-    directory: evept-source-client/client/build
-    options:
-    - "--acl public-read"
+    directory: evept-source-master-client/client/build
 
-groups:
-- name: services
-  jobs:
-  - build-push-rolodex
-#   - deploy-rolodex
-- name: commands
-  jobs:
-  - build-push-rolodex-updater
-  - build-push-dispatch-ten
-- name: frontend
-  jobs:
-  - test-client
-  - build-dev-client
-  - build-prod-client
-- name: support
-  jobs:
-  - build-push-oneoff
-  - seed-eve-sde
+- name: evept-source-master
+  type: git
+  icon: github-circle
+  source:
+    <<: *repo-source
+    branch: master
+
+- name: evept-source-master-client
+  type: git
+  icon: github-circle
+  source:
+    <<: *repo-source-client
+    branch: master
+
+- name: evept-source-master-rolodex
+  type: git
+  icon: github-circle
+  source:
+    <<: *repo-source-rolodex
+    branch: master
+
+- name: evept-source-master-rolodex-updater
+  type: git
+  icon: github-circle
+  source:
+    <<: *repo-source-rolodex-updater
+    branch: master
+
+- name: evept-source-master-dispatch-ten
+  type: git
+  icon: github-circle
+  source:
+    <<: *repo-source-dispatch-ten
+    branch: master
+
+- name: evept-source-master-scripts
+  type: git
+  icon: github-circle
+  source:
+    <<: *repo-source-scripts
+    branch: master
 
 jobs:
-- name: build-push-oneoff
+# Client
+- name: test-client-dev
   plan:
-  - get: evept-source-scripts
-    trigger: true
-  - put: oneoffscripts-image
-    params:
-      build: evept-source-scripts/scripts
-
-- name: seed-eve-sde
-  plan:
-  - get: evept-source
-  - put: kube
-    params:
-      kubectl: create -f evept-source/kubernetes/jobs/seed-sde.yaml
-      wait_until_ready_selector: job=seed-eve-sde
-
-- name: build-push-rolodex
-  plan:
-  - get: evept-source-rolodex
-    trigger: true
-  - put: rolodex-image
-    params:
-      build: evept-source-rolodex
-      dockerfile: evept-source-rolodex/dockerfiles/rolodex.Dockerfile
-
-- name: build-push-rolodex-updater
-  plan:
-  - get: evept-source-rolodex-updater
-    trigger: true
-  - put: rolodex-updater-image
-    params:
-      build: evept-source-rolodex-updater
-      dockerfile: evept-source-rolodex-updater/dockerfiles/rolodex-updater.Dockerfile
-
-- name: build-push-dispatch-ten
-  plan:
-  - get: evept-source-dispatch-ten
-    trigger: true
-  - put: dispatch-ten-image
-    params:
-      build: evept-source-dispatch-ten
-      dockerfile: evept-source-dispatch-ten/dockerfiles/dispatch-ten.Dockerfile
-
-- name: test-client
-  plan:
-  - get: evept-source-client
+  - get: evept-source-dev-client
     trigger: true
   - task: install
-    file: evept-source-client/ci/tasks/yarn.yml
+    file: evept-source-dev-client/ci/tasks/yarn.yml
     vars:
       command: install
+    input_mapping:
+      evept-source-client: evept-source-dev-client
+    output_mapping: 
+      evept-source-client: evept-source-dev-client
   - task: test
-    file: evept-source-client/ci/tasks/yarn.yml
+    file: evept-source-dev-client/ci/tasks/yarn.yml
     vars:
       command: test
+    input_mapping:
+      evept-source-client: evept-source-dev-client
+    output_mapping: 
+      evept-source-client: evept-source-dev-client
 
 - name: build-dev-client
   plan:
-  - get: evept-source-client
+  - get: evept-source-dev-client
     trigger: true
     passed:
-    - test-client
+    - test-client-dev
   - task: install
-    file: evept-source-client/ci/tasks/yarn.yml
+    file: evept-source-dev-client/ci/tasks/yarn.yml
     vars:
       command: install
+    input_mapping:
+      evept-source-client: evept-source-dev-client
+    output_mapping: 
+      evept-source-client: evept-source-dev-client
   - task: build
-    file: evept-source-client/ci/tasks/yarn.yml
+    file: evept-source-dev-client/ci/tasks/yarn.yml
     vars:
       command: build-dev
+    input_mapping:
+      evept-source-client: evept-source-dev-client
+    output_mapping: 
+      evept-source-client: evept-source-dev-client
   - put: s3-evept-dev
 
-- name: build-prod-client
+- name: test-client-master
   plan:
-  - get: evept-source-client
-    passed:
-    - build-dev-client
+  - get: evept-source-master-client
+    trigger: true
   - task: install
-    file: evept-source-client/ci/tasks/yarn.yml
+    file: evept-source-master-client/ci/tasks/yarn.yml
     vars:
       command: install
+    input_mapping:
+      evept-source-client: evept-source-master-client
+    output_mapping: 
+      evept-source-client: evept-source-master-client
+  - task: test
+    file: evept-source-master-client/ci/tasks/yarn.yml
+    vars:
+      command: test
+
+- name: build-master-client
+  plan:
+  - get: evept-source-master-client
+    trigger: true
+    passed:
+    - test-client-master
+  - task: install
+    file: evept-source-master-client/ci/tasks/yarn.yml
+    vars:
+      command: install
+    input_mapping:
+      evept-source-client: evept-source-master-client
+    output_mapping: 
+      evept-source-client: evept-source-master-client
   - task: build
-    file: evept-source-client/ci/tasks/yarn.yml
+    file: evept-source-master-client/ci/tasks/yarn.yml
     vars:
       command: build
+    input_mapping:
+      evept-source-client: evept-source-master-client
+    output_mapping: 
+      evept-source-client: evept-source-master-client
   - put: s3-evept-prod
+
+# Services - Rolodex
+- name: build-push-rolodex-dev
+  plan:
+  - get: evept-source-dev-rolodex
+    trigger: true
+  - put: rolodex-image
+    params:
+      build: evept-source-dev-rolodex
+      dockerfile: evept-source-dev-rolodex/dockerfiles/rolodex.Dockerfile
+      additional_tags: dev
+
+- name: deploy-rolodex-dev
+  plan:
+  - get: evept-source-dev-rolodex
+    trigger: true
+    passed:
+    - build-push-rolodex-dev
+  - put: kube
+    params:
+      kubectl: apply -f evept-source-dev-rolodex/kubernetes/dev/rolodex.yaml
+      namespace: evept-dev
+      wait_until_ready_selector: app=rolodex
+  - put: kube
+    params: &rollout-restart-rolodex
+      kubectl: rollout restart deployment/rolodex
+      namespace: evept-dev
+      wait_until_ready_selector: app=rolodex
+
+- name: build-push-rolodex-master
+  plan:
+  - get: evept-source-master-rolodex
+    trigger: true
+  - put: rolodex-image
+    params:
+      build: evept-source-master-rolodex
+      dockerfile: evept-source-master-rolodex/dockerfiles/rolodex.Dockerfile
+      tag_as_latest: true
+      additional_tags: master
+
+- name: deploy-rolodex-master
+  plan:
+  - get: evept-source-master-rolodex
+    trigger: true
+    passed:
+    - build-push-rolodex-master
+  - put: kube
+    params:
+      kubectl: apply -f evept-source-dev-rolodex/kubernetes/prod/rolodex.yaml
+      wait_until_ready_selector: app=rolodex
+      namespace: evept-prod
+  - put: kube
+    params:
+      <<: *rollout-restart-rolodex
+      namespace: evept-prod
+
+# Commands - Rolodex Updater
+- name: build-push-rolodex-updater-dev
+  plan:
+  - get: evept-source-dev-rolodex-updater
+    trigger: true
+  - put: rolodex-updater-image
+    params:
+      build: evept-source-dev-rolodex-updater
+      dockerfile: evept-source-dev-rolodex-updater/dockerfiles/rolodex-updater.Dockerfile
+      additional_tags: dev
+
+- name: build-push-rolodex-updater-master
+  plan:
+  - get: evept-source-master-rolodex-updater
+    trigger: true
+  - put: rolodex-updater-image
+    params:
+      build: evept-source-master-rolodex-updater
+      dockerfile: evept-source-master-rolodex-updater/dockerfiles/rolodex-updater.Dockerfile
+      tag_as_latest: true
+      additional_tags: master
+
+# Commands - Dispatch Ten
+- name: build-push-dispatch-ten-dev
+  plan:
+  - get: evept-source-dev-dispatch-ten
+    trigger: true
+  - put: dispatch-ten-image
+    params:
+      build: evept-source-dev-dispatch-ten
+      dockerfile: evept-source-dev-dispatch-ten/dockerfiles/dispatch-ten.Dockerfile
+      additional_tags: dev
+
+- name: build-push-dispatch-ten-master
+  plan:
+  - get: evept-source-master-dispatch-ten
+    trigger: true
+  - put: dispatch-ten-image
+    params:
+      build: evept-source-master-dispatch-ten
+      dockerfile: evept-source-master-dispatch-ten/dockerfiles/dispatch-ten.Dockerfile
+      tag_as_latest: true
+      additional_tags: master
+
+# Support
+- name: build-push-oneoff-dev
+  plan:
+  - get: evept-source-dev-scripts
+    trigger: true
+  - put: oneoffscripts-image
+    params:
+      build: evept-source-scripts-dev/scripts
+      additional_tags: dev
+
+- name: build-push-oneoff-master
+  plan:
+  - get: evept-source-master-scripts
+    trigger: true
+  - put: oneoffscripts-image
+    params:
+      build: evept-source-scripts-master/scripts
+      tag_as_latest: true
+      additional_tags: master
+
+- name: seed-eve-sde-dev
+  plan:
+  - get: evept-source-dev
+  - put: kube
+    params:
+      kubectl: create -f evept-source-dev/kubernetes/global/jobs/seed-sde.yaml
+      namespace: evept-dev
+      wait_until_ready_selector: job=seed-eve-sde
+
+- name: seed-eve-sde-master
+  plan:
+  - get: evept-source-master
+  - put: kube
+    params:
+      kubectl: create -f evept-source-master/kubernetes/global/jobs/seed-sde.yaml
+      namespace: evept-prod
+      wait_until_ready_selector: job=seed-eve-sde

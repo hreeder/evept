@@ -1,0 +1,33 @@
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name:  rolodex-updater
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            cronjob: rolodex-updater
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: updater
+            image: evept/rolodex-updater:latest
+            envFrom:
+            - configMapRef:
+                name: evept-common
+            volumeMounts:
+            - name: evept-db-creds
+              mountPath: /etc/evept/db/credentials
+            - name: evept-esi
+              mountPath: /etc/evept/esi
+          volumes:
+          - name: evept-db-creds
+            secret:
+              secretName: evept-db-auth
+          - name: evept-esi
+            secret:
+              secretName: esi-credentials

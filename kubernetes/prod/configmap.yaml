@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: evept-common
+  namespace: evept-prod
+data:
+  # Web Stuff
+  EVEPT_AUTH0_API_IDENTIFIER: https://api.evept.err.wtf/
+  EVEPT_AUTH0_DOMAIN: evept.eu.auth0.com
+  EVEPT_ALLOWED_CORS_ORIGINS: https://evept.err.wtf
+  # Services
+  EVEPT_QUEUE_HOST: evept-queue:6379
+  EVEPT_QUEUE_CLUSTER: "true"
+  EVEPT_DB_HOST: evept-db
+  EVEPT_DB_NAME: evept
