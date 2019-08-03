@@ -96,7 +96,8 @@ func GetDBConfig() *db.Config {
 // GetQueueConfig returns a queue.Config object ready to go
 func GetQueueConfig(logger loggo.Logger) *queue.Config {
 	return &queue.Config{
-		Host:   getRequiredEnvVar("EVEPT_QUEUE_HOST"),
-		Logger: logger,
+		Host:    getRequiredEnvVar("EVEPT_QUEUE_HOST"),
+		Cluster: os.Getenv("EVEPT_QUEUE_CLUSTER"),
+		Logger:  logger,
 	}
 }
