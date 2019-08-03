@@ -19,4 +19,5 @@ export PGPASSWORD=`cat /etc/evept/db/credentials/POSTGRES_PASSWORD`
 
 pg_restore -c -h evept-db -d evept $DUMP_FILE
 
+# Verify pg_restore worked - this will serve as our exit code for job purposes
 psql -h evept-db -d evept -c "SELECT schema_name FROM information_schema.schemata WHERE schema_name='evesde';" | grep "1 row"
