@@ -5,11 +5,11 @@ import (
 )
 
 func getSubmissionQueue(name string) string {
-	return fmt.Sprintf("tasks:%v:submitted", name)
+	return fmt.Sprintf("tasks:{%v}:submitted", name)
 }
 
 func getWorkingQueueName(name string) string {
-	return fmt.Sprintf("tasks:%v:working", name)
+	return fmt.Sprintf("tasks:{%v}:working", name)
 }
 
 // SubmitTask submits a task to be worked on
