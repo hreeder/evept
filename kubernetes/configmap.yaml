@@ -10,7 +10,8 @@ data:
   EVEPT_AUTH0_DOMAIN: evept-dev.eu.auth0.com
   EVEPT_ALLOWED_CORS_ORIGINS: https://evept-dev.err.wtf
   # Services
-  EVEPT_QUEUE_HOST: evept-queue:6379,evept-queue:6379
+  EVEPT_QUEUE_HOST: evept-queue:6379
+  EVEPT_QUEUE_CLUSTER: "true"
   EVEPT_DB_HOST: evept-db
   EVEPT_DB_NAME: evept
   # Debug
