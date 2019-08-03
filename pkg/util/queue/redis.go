@@ -13,7 +13,7 @@ func (c *Config) RedisClient() redis.UniversalClient {
 			Addrs: strings.Split(c.Host, ","),
 		})
 	}
-	return redis.NewClient({
-		Addr: c.Host, ",",
+	return redis.NewClient(&redis.Options{
+		Addr: c.Host,
 	})
 }
