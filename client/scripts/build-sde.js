@@ -7,13 +7,17 @@ const extract = require('extract-zip'),
 
 // Get SDE if it doesn't exist
 // TODO: Work out a way to dynamically work out if this is the latest version
-const SDE_URL = "https://cdn1.eveonline.com/data/sde/tranquility/sde-20181009-TRANQUILITY.zip"
+const SDE_URL = "https://cdn1.eveonline.com/data/sde/tranquility/sde-20190625-TRANQUILITY.zip"
 const cwd = process.cwd()
 const sde_dir = `${cwd}/eve_sde`
 const output_dir = `${cwd}/public/sde`
 
+function log(message) {
+  console.log(`[build-sde] ${message}`)
+}
+
 async function processTypeIDs() {
-  console.log('processing type ids')
+  log('processing type ids')
   const typeIDs_data = fs.readFileSync(`${sde_dir}/sde/fsd/typeIDs.yaml`, 'utf-8')
   const typeIDs = yaml.safeLoad(typeIDs_data)
   let typeIDs_transformed = {}
@@ -37,7 +41,7 @@ async function processTypeIDs() {
   // Output the data
   json_string = JSON.stringify(typeIDs_transformed)
   fs.writeFileSync(`${output_dir}/typeIDs.json`, json_string)
-  console.log('wrote typeIDs.json')
+  log('wrote typeIDs.json')
 
   const s = new Readable()
   s.push(json_string)
@@ -46,11 +50,11 @@ async function processTypeIDs() {
   const zipper = zlib.createGzip()
   const zippedStream = fs.createWriteStream(`${output_dir}/typeIDs.json.gz`)
   s.pipe(zipper).pipe(zippedStream)
-  console.log('wrote typeIDs.json.gz')
+  log('wrote typeIDs.json.gz')
 }
 
 async function processGroupIDs() {
-  console.log('processing group ids')
+  log('processing group ids')
   const groupIDs_data = fs.readFileSync(`${sde_dir}/sde/fsd/groupIDs.yaml`, 'utf-8')
   const groupIDs = yaml.safeLoad(groupIDs_data)
   let groupIDs_transformed = {}
@@ -70,7 +74,7 @@ async function processGroupIDs() {
   // Output the data
   json_string = JSON.stringify(groupIDs_transformed)
   fs.writeFileSync(`${output_dir}/groupIDs.json`, json_string)
-  console.log('wrote groupIDs.json')
+  log('wrote groupIDs.json')
 
   const s = new Readable()
   s.push(json_string)
@@ -79,31 +83,51 @@ async function processGroupIDs() {
   const zipper = zlib.createGzip()
   const zippedStream = fs.createWriteStream(`${output_dir}/groupIDs.json.gz`)
   s.pipe(zipper).pipe(zippedStream)
-  console.log('wrote groupIDs.json.gz')
+  log('wrote groupIDs.json.gz')
 }
 
-async function run() {
+
+
+(async () => {
   if (!fs.existsSync(sde_dir)) {
+    log("Creating SDE Dir")
     fs.mkdirSync(sde_dir)
 
     // Download SDE
+    log("Downloading SDE")
     const sde_archive = fs.createWriteStream(`${sde_dir}/sde.zip`)
     const response = await fetch(SDE_URL)
     await new Promise(resolve => response.body.pipe(sde_archive).on('finish', resolve))
 
     // unzip
-    await new Promise(resolve => extract(`${sde_dir}/sde.zip`, { dir: sde_dir }, err => resolve))
+    log("Extracting SDE")
+    await new Promise(resolve => {
+      extract(`${sde_dir}/sde.zip`, { dir: sde_dir }, err => {
+        if (err !== undefined) {
+          log("Failed to Extract")
+          console.log(err)
+        } else {
+          log("extracted")
+        }
+        resolve()
+      })
+    })
   }
+  log("doing more stuff")
 
-  if (!fs.existsSync(output_dir)) fs.mkdirSync(output_dir)
+  if (!fs.existsSync(output_dir)) {
+    fs.mkdirSync(output_dir)
+  }
 
   // At this point, we should have the SDE ready to work with
 
   // We're going to deal with typeIDs.yaml first because that's our
   // primary source of a lot of data
-  
-  processTypeIDs()
-  processGroupIDs()
-}
-
-run()
+  log("Processing")
+  Promise.all([
+    processTypeIDs(),
+    processGroupIDs()
+  ]).then(() => {
+    log("Done!")
+  })
+})()

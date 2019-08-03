@@ -1,3 +1,0 @@
-aws-xray-sdk~=2.2
-EsiPy~=1.0
-simplejson~=3.16

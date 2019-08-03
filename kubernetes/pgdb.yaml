@@ -1,0 +1,31 @@
+---
+apiVersion: kubedb.com/v1alpha1
+kind: Postgres
+metadata:
+  name: evept-db
+  namespace: evept
+spec:
+  version: "10.2-v2"
+  storageType: Durable
+  replicas: 3
+  standbyMode: Hot
+  storage:
+    storageClassName: do-block-storage
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 10Gi
+  # terminationPolicy: DoNotTerminate
+  terminationPolicy: WipeOut
+  updateStrategy:
+    type: RollingUpdate
+  podTemplate:
+    spec:
+      env:
+      - name: POSTGRES_DB
+        value: evept
+  monitor:
+    agent: prometheus.io/builtin
+    prometheus:
+      port: 56790

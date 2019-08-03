@@ -21,7 +21,8 @@ describe('the CharacterIcon component', () => {
       resourceType: "evept:test_123:character",
       resourceIdentifier: "445518960",
       characterName: "Sklullus Dromulus",
-      characterId: "445518960"
+      characterId: "445518960",
+      skillqueueLoaded: true
     })
   })
 
@@ -58,7 +59,8 @@ describe('the CharacterIcon component', () => {
       resourceIdentifier: "445518960",
       characterName: "Sklullus Dromulus",
       characterId: "445518960",
-      total_sp: 5100000
+      total_sp: 5100000,
+      skillqueueLoaded: true
     })
     wrapper = mount(<MemoryRouter><RawCharacterIcon character={character} /></MemoryRouter>)
     expect(wrapper.find('p').at(0).html()).toContain('5.1M SP')

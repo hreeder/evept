@@ -1,0 +1,28 @@
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name:  dispatch-ten
+spec:
+  schedule: "*/10 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            cronjob: dispatch-ten
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: updater
+            image: evept/dispatch-ten:latest
+            envFrom:
+            - configMapRef:
+                name: evept-common
+            volumeMounts:
+            - name: evept-db-creds
+              mountPath: /etc/evept/db/credentials
+          volumes:
+          - name: evept-db-creds
+            secret:
+              secretName: evept-db-auth

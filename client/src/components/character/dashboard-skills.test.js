@@ -73,7 +73,7 @@ describe('the SkillHighlight component', () => {
 
   it('uses a level of "X" when the skill is missing from the character', () => {
     const component = new SkillHighlight({
-      character: { skills: [] },
+      character: { skills: [{}] },
       typeIDs: { 1: { name: "Test Skill" } }
     })
 

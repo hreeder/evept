@@ -1,8 +1,30 @@
 import { getRomanNumeral } from '../util/romanNumerals'
 
 class Character {
+  skillsLoaded = false
+  skillqueueLoaded = false
+
   fromJSON(json) {
     Object.keys(json).forEach(key => this[key] = json[key])
+    if (this.hasOwnProperty("last_updated")) {
+      this.updated_at = this.last_updated.Time
+    }
+
+    if (this.hasOwnProperty("corporationId")) {
+      this.corporationId = this.corporationId.Int64
+    }
+
+    if (this.hasOwnProperty('securityStatus')) {
+      this.securityStatus = this.securityStatus.Float64
+    }
+
+    if (this.hasOwnProperty('totalSkillpoints')) {
+      this.total_sp = this.totalSkillpoints.Int64
+    }
+
+    if (this.hasOwnProperty('unallocatedSkillpoints')) {
+      this.unallocated_sp = this.unallocatedSkillpoints.Int64
+    }
 
     return this
   }

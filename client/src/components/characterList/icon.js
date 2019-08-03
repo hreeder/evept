@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux';
 
 import { Card, CardBody, CardTitle, CardImg, CardSubtitle, CardText, Button } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import TimeAgo from 'timeago-react'
+
+import { getCharacterSkillqueue } from '../../actions/characters'
 
 export class CharacterIcon extends Component {
   render() {
@@ -25,8 +28,14 @@ export class CharacterIcon extends Component {
       last_updated = <TimeAgo datetime={character.updated_at} />
     }
 
-    const _training = character.getCurrentlyTrainingSkill()
-    const training = _training ? `${this.props.sde.typeIDs[_training['skill_id']].name} ${_training['level']}` : "No Skill in Training"
+    var training
+    if (!character.skillqueueLoaded) {
+      this.props.getCharacterSkillqueue(character.characterId)
+      training = "Loading Skill Queue..."
+    } else {
+      const _training = character.getCurrentlyTrainingSkill()
+      training = _training ? `${this.props.sde.typeIDs[_training['skill_id']].name} ${_training['level']}` : "No Skill in Training"
+    }
 
     let omega_text = ''
     if (character.isOmega() !== undefined) omega_text = "αlpha"
@@ -46,7 +55,7 @@ export class CharacterIcon extends Component {
             <CardText>
               <small className="text-muted">Last updated: {last_updated}</small>
             </CardText>
-            <Button tag={Link} to={`/character/${character.resourceIdentifier}`} block>Select</Button>
+            <Button tag={Link} to={`/character/${character.characterId}`} block>Select</Button>
           </CardBody>
         </Card>
         <br />
@@ -57,6 +66,9 @@ export class CharacterIcon extends Component {
 
 export default connect(store => {
   return {
-    sde: store.sde
+    sde: store.sde,
+    characters: store.characters
   }
-})(CharacterIcon)
+}, (dispatch) => bindActionCreators({
+  getCharacterSkillqueue: getCharacterSkillqueue
+}, dispatch))(CharacterIcon)
