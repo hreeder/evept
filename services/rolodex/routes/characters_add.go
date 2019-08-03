@@ -31,7 +31,7 @@ func (c *Config) AddCharacter(w http.ResponseWriter, req *http.Request) {
 	var data AddCharacterExpectedInput
 	err := decoder.Decode(&data)
 	if err != nil {
-		web.ReturnJSONWithCode(w, http.StatusInternalServerError, &GenericErrorMessageResponse{
+		web.ReturnJSONWithCode(w, http.StatusInternalServerError, &web.GenericErrorMessageResponse{
 			Message:      "failed processing at decoding data",
 			ErrorMessage: err.Error(),
 		})
@@ -41,7 +41,7 @@ func (c *Config) AddCharacter(w http.ResponseWriter, req *http.Request) {
 	authenticator := c.ESIConfig.GetSSOAuthenticator()
 	token, err := authenticator.TokenExchange(data.Code)
 	if err != nil {
-		web.ReturnJSONWithCode(w, http.StatusInternalServerError, &GenericErrorMessageResponse{
+		web.ReturnJSONWithCode(w, http.StatusInternalServerError, &web.GenericErrorMessageResponse{
 			Message:      "failed processing at performing token exchange with ccp",
 			ErrorMessage: err.Error(),
 		})
@@ -52,7 +52,7 @@ func (c *Config) AddCharacter(w http.ResponseWriter, req *http.Request) {
 
 	verified, err := authenticator.Verify(tokenSource)
 	if err != nil {
-		web.ReturnJSONWithCode(w, http.StatusInternalServerError, &GenericErrorMessageResponse{
+		web.ReturnJSONWithCode(w, http.StatusInternalServerError, &web.GenericErrorMessageResponse{
 			Message:      "failed processing at accessing <esi>/verify",
 			ErrorMessage: err.Error(),
 		})
@@ -85,7 +85,7 @@ func (c *Config) AddCharacter(w http.ResponseWriter, req *http.Request) {
 	c.Logger.Debugf("Character Added, Submitting to Redis")
 	c.QueueConfig.SubmitTask("rolodex:update:fast", strconv.FormatInt(int64(newCharacter.CharacterID), 10))
 
-	web.ReturnJSON(w, &GenericMessageResponse{
+	web.ReturnJSON(w, &web.GenericMessageResponse{
 		Message: fmt.Sprintf("Successfully added %v (%d)", newCharacter.CharacterName, newCharacter.CharacterID),
 	})
 }

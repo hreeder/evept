@@ -20,7 +20,7 @@ func (c *Config) ListCharacters(w http.ResponseWriter, req *http.Request) {
 	characters := []evept.Character{}
 	err := db.Select(&characters, `SELECT * FROM public.characters WHERE owner=$1`, props.Auth0User)
 	if err != nil {
-		web.ReturnJSONWithCode(w, http.StatusInternalServerError, &GenericErrorMessageResponse{
+		web.ReturnJSONWithCode(w, http.StatusInternalServerError, &web.GenericErrorMessageResponse{
 			Message:      "failed to get characters",
 			ErrorMessage: err.Error(),
 		})

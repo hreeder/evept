@@ -31,7 +31,7 @@ func (c *Config) ListCharacterSkills(w http.ResponseWriter, req *http.Request) {
 	 AND cs."characterID"=$2;`, props.Auth0User, characterID)
 
 	if err != nil {
-		web.ReturnJSONWithCode(w, http.StatusInternalServerError, &GenericErrorMessageResponse{
+		web.ReturnJSONWithCode(w, http.StatusInternalServerError, &web.GenericErrorMessageResponse{
 			Message:      "failed to get skills",
 			ErrorMessage: err.Error(),
 		})
